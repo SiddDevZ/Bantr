@@ -1,0 +1,80 @@
+body{
+    background-color: #271F00;
+    overflow-x: hidden;
+}
+.nav-blur {
+    backdrop-filter: blur(10px); 
+}
+.nav{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+
+}
+.btn{
+    background-color: #EEEEEE;
+    transition: 0.2s all ease-in-out;
+}
+.btn:hover{
+    background-color: #CFCFCF;
+    h3{
+        color: black;
+    }
+}
+
+.tex{
+    font-size: 3.75rem;
+    line-height: 1.05;
+    font-weight: 1000;
+}
+
+.monitor-container {
+    width: 600px; 
+    height: 400px;
+    /* cursor: grab; */
+  }
+/* .monitor-container:active{ */
+    /* cursor: grabbing; */
+/* } */
+.background{
+    width: 600px; 
+    height: 400px; 
+    background-color: #ba9b00;
+    position: absolute;
+    filter: blur(100rem);
+    border-radius: 9999px;
+    opacity: 0.35;
+}
+
+.emoji-container{
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+    position: absolute;
+}
+.ae{
+    position: absolute;
+    opacity: 0.15;
+}
+.e1{
+    top: 70px;
+    height: 13vw;
+    right: 40vw;
+    rotate: -15deg;
+}
+.e2{
+    top: 55vh;
+    left: 30vw;
+    rotate: 15deg;
+    height: 15vw;
+    opacity: 0.10
+}
+.e3{
+    top: 60vh;
+    right: -5vw;
+    /* rotate: -15deg; */
+    height: 15vw;
+    opacity: 0.10
+}
