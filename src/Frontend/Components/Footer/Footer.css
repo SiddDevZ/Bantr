@@ -1,0 +1,32 @@
+.footer-parent{
+    border-top: 1px solid rgba(229, 229, 229, 0.408);
+    border-bottom: 1px solid rgba(229, 229, 229, 0.408);
+}
+
+.footer-glow:hover{
+    filter: drop-shadow(0 0 1em #ffffffa5);
+}
+
+.name-parent{
+    border-bottom: 1px solid rgba(229, 229, 229, 0.408);
+}
+
+.footer-underline {
+    position: relative;
+    text-decoration: none;
+}
+
+.footer-underline::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.711);
+    background-color: rgb(255, 238, 0);
+}
+
+.footer-underline:hover::after {
+    background-color: rgb(9, 255, 0); /* Change to blue on hover */
+}
