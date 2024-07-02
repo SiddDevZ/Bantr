@@ -54,105 +54,114 @@ const Landing = () => {
             <img src="eyes.png" alt="" className='ae e5'/>
           </div>
 
-          <main className='flex w-[100vw] z-500 min-h-[550px] items-center mt-[10vh] justify-between md:justify-center sm:px-[5.5rem] md:px-[4rem] lg:px-[7.5vw] xss:px-[3vw]'>
+          <main className='relative w-100 max-w-5xl mx-auto xss:mt-[30vh] md:mt-[18vh] lg:mt-[14vh] sm:pt-24 lg:pt-32'>
             <div className='w-full'>
-              <h1 className='tex xs:text-[9vw] xss:text-[10vw] sm:text-6xl font-pop whitespace-nowrap xss:text-center xss:w-full lg:text-left'>THE PLACE<br />TO SHARE FUN<br />AND HUMOR</h1>
-              <p className='font-pop font-normal text-lg xss:text-xs sm:text-base sm:w-[90%] md:w-[70%] w-[450px] xss:mt-2 sm:mt-4 text-gray-200 xss:text-center xss:w-[90%] lg:text-left lg:whitespace-normal lg:mx-0 xss:mx-auto'>Bantr is a vibrant community to make new friends and connect with like-minded people. We like to spread positivity and fun by humor and laughter.</p>
-              <button className='bg-[#FAC304] px-6 py-3 mt-5 xss:mx-auto lg:mx-0 rounded-full flex'><h1 className='text-black font-semibold text-xl'>Get Started</h1><i class="ri-arrow-right-line text-black text-2xl font-bold ml-2"></i></button>
-            </div>
-            <div className='monitor-container md:hidden sm:hidden xss:hidden lg:block'>
-              <div className='background'></div>
-              {/* <Monitor /> */}
-              <h1 className='flex justify-center items-center h-[100%]'>(removed monitor temporarily)</h1>
+              <h1 className='px-1 text-white font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight text-center whitespace-break-spaces'>Imagine a place where you can share Memes and have Fun.</h1>
+              <p className='px-3 mt-4 text-lg text-center max-w-3xl mx-auto text-[#e4e4e4]'>Bantr is a vibrant community to make new friends and connect with like-minded people. We like to spread positivity and fun by humor and laughter.</p>
+              <div className='lg:mt-7 xss:mt-8 flex justify-center space-x-6'>
+                <button className='bg-[#FAC304] sm:px-6 sm:py-3 xs:px-[5vw] xs:py-[2vw] xss:px-[3.5vw] xss:py-[1.5vw] rounded-lg flex'><h1 className='text-black font-semibold xs:text-xl xss:text-lg whitespace-nowrap'>Get Started</h1><i class="ri-arrow-right-line text-black text-2xl font-bold ml-2"></i></button>
+                <button className='bg-[#242424] sm:px-6 sm:py-3 xs:px-[5vw] xs:py-[2vw] xss:px-[3.5vw] xss:py-[1.5vw] rounded-lg flex'><h1 className='text-white font-semibold xs:text-xl xss:text-lg whitespace-nowrap'>Start As Guest</h1><i class="ri-arrow-right-line text-white text-2xl font-bold ml-2"></i></button>
+              </div>
             </div>
           </main>
 
-          <div className='mt-10 mb-36 lg:flex xss:block w-[100vw] z-500 justify-between lg:px-[8rem]'>
-            <div className='flex justify-center mr-20 xss:mr-0 xss:mb-10'>
-              <img src="log.png" alt="" className='flex h-[12vw] ' />
+          <div className='mt-20 xss:mt-32 sm:mt-28 lg:mt-40 mb-36 lg:flex xss:block w-[100vw] z-500 justify-between lg:px-[8rem]'>
+            <div className='flex justify-center lg:mx-auto xss:mb-10'>
+              <img src="log.png" alt="" className='flex md:min-h-[140px] xss:min-h-[110px] h-[12vw] ' />
             </div>
-            <div className='lg:w-[70%] xss:w-full max-w-[700px]'>
-              <h1 className='font-pop font-black lg:text-6xl whitespace-nowrap xs:text-[9vw] xss:text-[9vw] md:text-6xl xss:text-center xss:w-full lg:text-left'>WHAT IS BANTR?</h1>
-              <p className='font-pop font-normal text-md leading-[1.7rem] mt-4 w-[100%] max-w-[39rem] text-gray-200'>Bantr is a dynamic online community designed for teens to connect, share, and enjoy the lighter side of life. It's a place where humor thrives, friendships blossom, and creativity knows no bounds. Whether you're swapping memes, engaging in playful</p>
-              <div className='flex mt-2'>
-                <img src="star.png" alt="" className='h-8' />
-                <img src="star.png" alt="" className='h-8' />
-                <img src="star.png" alt="" className='h-8' />
-                <img src="star.png" alt="" className='h-8' />
-                <img src="star.png" alt="" className='h-8' />
+            <div className='lg:w-[70%] flex justify-center xss:w-full'>
+              <div>
+                <h1 className='font-pop font-black lg:text-6xl whitespace-nowrap xs:text-[9vw] xss:text-[9vw] md:text-6xl xss:text-center xss:w-full lg:text-left'>WHAT IS BANTR?</h1>
+                <p className='font-pop lg:font-normal xss:font-light lg:text-lg xss:text-sm leading-[1.7rem] md:mt-4 xss:mt-0 lg:w-[100%] lg:max-w-[39rem] text-gray-200 xss:text-center xss:w-[90%] xss:max-w-[700px] lg:text-left lg:whitespace-normal lg:mx-0 xss:mx-auto'>Bantr is a dynamic online community designed for teens to connect, share, and enjoy the lighter side of life. It's a place where humor thrives, friendships blossom, and creativity knows no bounds.</p>
+                <div className='flex xss:justify-center lg:justify-start mt-2'>
+                  <img src="star.png" alt="" className='h-8' />
+                  <img src="star.png" alt="" className='h-8' />
+                  <img src="star.png" alt="" className='h-8' />
+                  <img src="star.png" alt="" className='h-8' />
+                  <img src="star.png" alt="" className='h-8' />
+                </div>
               </div>
             </div>
           </div>
 
-          <div className='mb-28'>
-            <h1 className='font-pop font-black text-6xl whitespace-nowrap text-center'>WHY BANTR?</h1>
-            <div className='flex justify-between sm:px-[5.5rem] md:px-[6rem] lg:px-[8rem] mt-14'>
-              <div className='w-1/3 flex flex-col items-center justify-center'>
-                <img src="/why/lock.png" alt="" className='h-[7vw]' />
+          <div className='mb-28 w-[100vw]'>
+            <h1 className='font-pop font-black lg:text-6xl xs:text-[9vw] xss:text-[9vw] md:text-6xl whitespace-nowrap text-center'>WHY BANTR?</h1>
+            <div className='flex flex-wrap justify-between sm:px-[5.5rem] md:px-[6rem] lg:px-[8rem] mt-10'>
+              <div className='w-full sm:w-1/2 lg:w-1/3 flex flex-col items-center justify-center p-4'>
+                <img src="/why/lock.png" alt="" className='h-[7vw] min-h-[85px] max-h-[100px]' />
                 <h1 className='font-pop font-semibold mb-1 mt-1 text-2xl whitespace-nowrap'>E2E Encryption</h1>
-                <p className='w-[70%] text-center text-gray-200'>At Bantr, your privacy and security are our top priorities. your messages and shared content are always protected</p>
+                <p className='w-[70%] min-w-[222px] text-center text-gray-200'>At Bantr, your privacy and security are our top priorities. your messages and shared content are always protected</p>
               </div>
-              <div className='w-1/3 flex flex-col items-center justify-center'>
-                <img src="/why/channel.png" alt="" className='h-[7vw]' />
+              <div className='w-full sm:w-1/2 lg:w-1/3 flex flex-col items-center justify-center p-4'>
+                <img src="/why/channel.png" alt="" className='h-[7vw] min-h-[85px] max-h-[100px]' />
                 <h1 className='font-pop font-semibold mb-1 text-2xl whitespace-nowrap'>Organized Channels</h1>
-                <p className='w-[70%] text-center text-gray-200'>We have channels for all topics.<br />Easily find and join channels that match your interests. With like minded people.</p>
+                <p className='w-[70%] min-w-[222px] text-center text-gray-200'>We have channels for all topics. Easily find and join channels that match your interests. With like minded people.</p>
               </div>
-              <div className='w-1/3 flex flex-col items-center justify-center'>
-                <img src="/why/home.png" alt="" className='h-[7vw]' />
+              <div className='w-full sm:w-1/2 lg:w-1/3 flex flex-col items-center justify-center p-4'>
+                <img src="/why/home.png" alt="" className='h-[7vw] min-h-[85px] max-h-[100px]' />
                 <h1 className='font-pop font-semibold translate-y-2 mb-2 mt-1 text-2xl whitespace-nowrap'>Best Community</h1>
-                <p className='w-[70%] text-center text-gray-200'>Meet like minded people at Bantr<br />Join a community of memers where friendships grow and every interaction is filled with smiles</p>
+                <p className='w-[70%] min-w-[222px] text-center text-gray-200'>Meet like minded people at Bantr And Join a community of memers where friendships grow and every interaction is filled with smiles</p>
               </div>
             </div>
           </div>
 
-          <div className='mb-16 flex flex-col '>
-            <h1 className='font-pop font-black text-[3.5rem] leading-[1.13] whitespace-nowrap text-center'>WHAT ARE YOU WAITING FOR?<br /><span className='bg-gradient-to-r from-[#EEC800] to-[#FF8A00] text-transparent bg-clip-text'>JOIN US NOW!</span></h1>
-            <button className='bg-[#ffffff] m-auto px-7 py-3 mt-5 rounded-full flex'><h1 className='text-black font-semibold text-xl'>Get Started</h1><i class="ri-arrow-right-line text-black text-2xl font-bold ml-2"></i></button>
+          <div className='mb-28 flex flex-col'>
+            <h1 className='font-pop font-black text-[6vw] xss:text-[9vw] sm:text-[5vw] md:text-[4.5vw] lg:text-[4vw] leading-[1.13] text-center'>
+              <span className='sm:whitespace-nowrap xss:whitespace-normal'>WHAT ARE YOU WAITING FOR?</span>
+              <br />
+              <span className='bg-gradient-to-r from-[#EEC800] to-[#FF8A00] text-transparent bg-clip-text'>JOIN US NOW!</span>
+            </h1>
+            <button className='bg-[#ffffff] mx-auto px-[4vw] xss:px-[5vw] sm:px-[3.5vw] py-[1.5vw] xss:py-[3vw] sm:py-[1.3vw] lg:py-[1vw] lg:px-[2vw] xss:mt-[3vw] lg:mt-[2vw] rounded-full flex items-center justify-center'>
+              <h1 className='text-black font-semibold text-[3vw] xss:text-[3.5vw] sm:text-[2.5vw] md:text-[2vw] lg:text-[1.6vw] flex items-center whitespace-nowrap'>
+                Get Started
+                <i className="ri-arrow-right-line text-black ml-[1vw]"></i>
+              </h1>
+            </button>
           </div>
 
           <div className='mb-72'>
-            <h1 className='text-center text-[16vw] tracking-wider font-pop leading-none opacity-25 bg-gradient-to-b from-[#FFFFFF] to-[#414141] text-transparent bg-clip-text'>Contact Us</h1>
-            <div className='sm:px-[5.5rem] md:px-[7rem] lg:px-[8rem] -translate-y-14'>
-              <div className='flex justify-between'>
-                <div className='flex flex-col justify-between'>
+            <h1 className='text-center  text-[16vw] tracking-wider font-pop leading-none opacity-25 bg-gradient-to-b from-[#FFFFFF] to-[#414141] text-transparent bg-clip-text'>Contact Us</h1>
+            <div className='lg:px-[5rem] md:px-[5rem] sm:px-[3.5rem] xs:px-[3rem] xss:px-[2.4rem] sm:-translate-y-14 xss:-translate-y-6'>
+              <div className='flex flex-col lg:flex-row justify-between'>
+                <div className='flex flex-col sm:space-y-8 xss:space-y-5 lg:w-[45%] mb-10 lg:mb-0'>
                   <div>
-                    <h1 className='leading-none font-pop font-bold text-[5vw] text-gray-100'>Reach Out <i class="ri-arrow-right-up-line bg-gradient-to-bl text-8xl from-[#FFFFFF] to-[#414141] text-transparent bg-clip-text"></i></h1>
-                    <p className='mt-3 text-[1.2vw] w-[35vw] text-[#d2d2d2] leading-[1.2] opacity-90'>Have a question or need assistance? Whether you're seeking support, have an inquiry, or simply want to connect, feel free to reach out. I'm always here to help and will make every effort to respond to you. I look forward to connecting with you soon.</p>
-                  </div>
-                  <div className='mt-2 flex-col mb-5'>
-                    <div className='flex items-center mb-4'>
-                      <div className='flex w-[2.7vw] h-[2.7vw] bg-[#DEDEDE] mr-5 rounded-full justify-center items-center'>
-                        <img src="check.png" alt="" className='' />
+                    <h1 className='leading-none font-pop font-bold lg:text-6xl md:text-6xl sm:text-5xl xss:text-5xl text-gray-100 whitespace-nowrap'>Reach Out <i class="ri-arrow-right-up-line bg-gradient-to-bl lg:text-7xl xss:text-5xl  md:text-6xl sm:text-5xl from-[#FFFFFF] to-[#414141] text-transparent bg-clip-text"></i></h1>
+                    <p className='mt-3 text-[16px] md:text-[1.35rem] whitespace-normal lg:text-[1.17rem] w-full lg:w-[35vw] text-[#d2d2d2] leading-[1.2] opacity-90'>Have a question or need assistance? Whether you're seeking support, have an inquiry, or simply want to connect, feel free to reach out. I'm always here to help and will make every effort to respond to you. I look forward to connecting with you soon.</p>
+                    <div className='mt-10 flex-col mb-5'>
+                      <div className='flex items-center mb-4'>
+                        <div className='flex w-[40px] h-[40px] lg:w-[45px] lg:h-[45px] bg-[#DEDEDE] mr-5 rounded-full justify-center items-center'>
+                          <img src="check.png" alt="" className='w-[67%]' />
+                        </div>
+                        <h1 className='font-pop font-medium text-lg'>Timely Response</h1>
                       </div>
-                      <h1 className='font-pop font-medium text-lg'>Timely Response</h1>
-                    </div>
-                    <div className='flex items-center'>
-                      <div className='flex w-[2.7vw] h-[2.7vw] bg-[#DEDEDE] mr-5 rounded-full justify-center items-center'>
-                        <img src="check.png" alt="" className='w-' />
+                      <div className='flex items-center'>
+                        <div className='flex w-[40px] h-[40px] lg:w-[45px] lg:h-[45px] bg-[#DEDEDE] mr-5 rounded-full justify-center items-center'>
+                          <img src="check.png" alt="" className='w-[67%]' />
+                        </div>
+                        <h1 className='font-pop font-medium text-lg'>Personalized response</h1>
                       </div>
-                      <h1 className='font-pop font-medium text-lg'>Personalized response</h1>
                     </div>
                   </div>
                   <div className='flex mb-5'>
-                    <div className='flex w-[3.5vw] h-[3.5vw] bg-[#EBEBEB] mr-5 rounded-full justify-center items-center blur-thing'>
-                      <i class="ri-github-fill text-black text-[2.7vw]"></i>
+                    <div className='flex md:w-[50px] md:h-[50px] sm:w-[45px] sm:h-[45px] xss:w-[45px] xss:h-[45px] bg-[#EBEBEB] mr-5 rounded-full justify-center items-center blur-thing'>
+                      <i class="ri-github-fill    text-black md:text-[40px] xss:text-[35px]"></i>
                     </div>
-                    <div className='flex w-[3.5vw] h-[3.5vw] bg-[#EBEBEB] mr-5 rounded-full justify-center items-center'>
-                      <i class="ri-twitter-x-line text-black text-[2.2vw]"></i>
+                    <div className='flex md:w-[50px] md:h-[50px] sm:w-[45px] sm:h-[45px] xss:w-[45px] xss:h-[45px] bg-[#EBEBEB] mr-5 rounded-full justify-center items-center'>
+                      <i class="ri-twitter-x-line text-black md:text-[32px] xss:text-[30px]"></i>
                     </div>
-                    <div className='flex w-[3.5vw] h-[3.5vw] bg-[#EBEBEB] mr-5 rounded-full justify-center items-center'>
-                      <i class="ri-instagram-line text-black text-[2.35vw]"></i>
+                    <div className='flex md:w-[50px] md:h-[50px] sm:w-[45px] sm:h-[45px] xss:w-[45px] xss:h-[45px] bg-[#EBEBEB] mr-5 rounded-full justify-center items-center'>
+                      <i class="ri-instagram-line text-black md:text-[38px] xss:text-[32px]"></i>
                     </div>
                   </div>
                 </div>
-
-                <div className='w-[45%] border border-[#c0c0c0] p-7 rounded-xl'>
-                  <form className='space-y-6'>
-                    <div className='flex justify-between space-x-3'>
-                      <div className='w-1/3'>
+            
+                <div className='w-full lg:w-[45%] border border-[#c0c0c0] p-7 rounded-xl'>
+                  <form className='xss:space-y-4 md:space-y-6'>
+                    <div className='flex flex-col sm:flex-row justify-between space-y-3 sm:space-y-0 sm:space-x-3'>
+                      <div className='w-full sm:w-1/3'>
                         <input type="text" id="name" placeholder='Name' className='h-12 block bg-[rgba(103,103,103,0.2)] pl-4 w-full border rounded-2xl shadow-sm text-gray-100' />
                       </div>
-                      <div className='w-2/3'>
+                      <div className='w-full sm:w-2/3'>
                         <input type="email" id="email" placeholder='Email' className='h-12 block bg-[rgba(103,103,103,0.2)] pl-4 w-full border rounded-2xl shadow-sm text-gray-100' />
                       </div>
                     </div>
@@ -164,9 +173,7 @@ const Landing = () => {
                     </div>
                   </form>
                 </div>
-                
               </div>
-            
             </div>
           </div>
         </div>
