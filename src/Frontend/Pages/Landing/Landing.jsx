@@ -1,26 +1,47 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import './Landing.css'
 import 'remixicon/fonts/remixicon.css'
 import Monitor from '../../Components/Monitor/Monitor';
+import Navbar from '../../Components/Navbar/Navbar';
+import Footer from '../../Components/Footer/Footer'
+import { ToastContainer, toast, Bounce } from 'react-toastify';
 
 const Landing = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      const threshold = 300;
-      const navElement = document.querySelector('nav');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-      const blurAmount = Math.min((scrollPosition / threshold) * 10, 10);
-      navElement.style.backdropFilter = `blur(${blurAmount}px)`;
+    const link = '';
+
+    const payload = {
+      content: `# **__${name}\__**\n**${email}**\n\`\`\`${message}\`\`\``
     };
 
-    window.addEventListener('scroll', handleScroll);
+    try {
+      const response = await fetch(link, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      if (response.ok) {
+        alert('Message sent successfully!');
+        setName('');
+        setEmail('');
+        setMessage('');
+      } else {
+        alert('Failed to send message. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred. Please try again.');
+    }
+  }
 
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
 
   return (
     <>
@@ -29,38 +50,24 @@ const Landing = () => {
         <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-yell [mask-image:radial-gradient(ellipse_at_center,transparent_0%,black)]"></div>
         <div className='z-20 animate-in'>
 
-          <nav className='flex w-full sm:px-20 md:px-24 lg:px-28 nav items-center justify-between'>
-            <div className='flex items-center justify-between w-[127px]'>
-              <img src="logo.png" alt="Logo" className="w-full h-full" />
-              <h1 className='text-2xl font-pop font-semibold'>Bantr</h1>
-            </div>
-
-            <div className='flex font-pop font-semibold text-md gap-14 text-md'>
-              <h3 className='text-white hover:underline cursor-pointer'>Home</h3>
-              <h3 className='text-white hover:underline cursor-pointer'>Contact</h3>
-              <h3 className='text-white hover:underline cursor-pointer'>Careers</h3>
-            </div>
-
-            <button className='px-5 py-2.5 rounded-full btn'>
-              <h3 className='font-pop font-semibold text-black'>Open Bantr</h3>
-            </button>
-          </nav>
+          <Navbar />
 
           <div className='emoji-container'>
-            <img src="skull.png" alt="" className='ae e1'/>
-            <img src="sunglasses.png" alt="" className='ae e2'/>
-            <img src="laugh.png" alt="" className='ae e3'/>
-            <img src="heart.png" alt="" className='ae e4'/>
-            <img src="eyes.png" alt="" className='ae e5'/>
+            <img src="iphone_emojis/skull.png" alt="" className='ae e1 sm:min-h-[150px] xss:min-h-[120px]'/>
+            <img src="iphone_emojis/sunglasses.png" alt="" className='ae e2 sm:min-h-[150px] xss:min-h-[120px] '/>
+            <img src="iphone_emojis/laugh.png" alt="" className='ae e3 sm:min-h-[150px] xss:min-h-[120px]'/>
+            <img src="iphone_emojis/heart.png" alt="" className='ae e4 sm:min-h-[150px] xss:min-h-[120px]'/>
+            <img src="iphone_emojis/eyes.png" alt="" className='ae e5 sm:min-h-[150px] xss:min-h-[120px]'/>
+            <img src="iphone_emojis/blushing.png" alt="" className='ae e6 sm:min-h-[150px] xss:min-h-[120px]'/>
           </div>
 
-          <main className='relative w-100 max-w-5xl mx-auto xss:mt-[30vh] md:mt-[18vh] lg:mt-[14vh] sm:pt-24 lg:pt-32'>
+          <main className='relative w-100 max-w-5xl mx-auto xss:mt-[25vh] xs:mt-[21vh] md:mt-[15vh] lg:mt-[7vh] sm:pt-24 lg:pt-32'>
             <div className='w-full'>
               <h1 className='px-1 text-white font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight text-center whitespace-break-spaces'>Imagine a place where you can share Memes and have Fun.</h1>
               <p className='px-3 mt-4 text-lg text-center max-w-3xl mx-auto text-[#e4e4e4]'>Bantr is a vibrant community to make new friends and connect with like-minded people. We like to spread positivity and fun by humor and laughter.</p>
               <div className='lg:mt-7 xss:mt-8 flex justify-center space-x-6'>
-                <button className='bg-[#FAC304] sm:px-6 sm:py-3 xs:px-[5vw] xs:py-[2vw] xss:px-[3.5vw] xss:py-[1.5vw] rounded-lg flex'><h1 className='text-black font-semibold xs:text-xl xss:text-lg whitespace-nowrap'>Get Started</h1><i class="ri-arrow-right-line text-black text-2xl font-bold ml-2"></i></button>
-                <button className='bg-[#242424] sm:px-6 sm:py-3 xs:px-[5vw] xs:py-[2vw] xss:px-[3.5vw] xss:py-[1.5vw] rounded-lg flex'><h1 className='text-white font-semibold xs:text-xl xss:text-lg whitespace-nowrap'>Start As Guest</h1><i class="ri-arrow-right-line text-white text-2xl font-bold ml-2"></i></button>
+                <button className='bg-[#FAC304] btnn sm:px-6 sm:py-3 xs:px-[5vw] xs:py-[2vw] xss:px-[3.5vw] xss:py-[1.5vw] rounded-lg flex'><h1 className='text-black font-semibold xs:text-xl xss:text-lg whitespace-nowrap'>Get Started</h1><i className="ri-arrow-right-line text-black text-2xl font-bold ml-2 button-arrow"></i></button>
+                <button className='bg-[#242424] btnn sm:px-6 sm:py-3 xs:px-[5vw] xs:py-[2vw] xss:px-[3.5vw] xss:py-[1.5vw] rounded-lg flex'><h1 className='text-white font-semibold xs:text-xl xss:text-lg whitespace-nowrap'>Start As Guest</h1><i className="ri-arrow-right-line text-white text-2xl font-bold ml-2 button-arrow"></i></button>
               </div>
             </div>
           </main>
@@ -111,21 +118,21 @@ const Landing = () => {
               <br />
               <span className='bg-gradient-to-r from-[#EEC800] to-[#FF8A00] text-transparent bg-clip-text'>JOIN US NOW!</span>
             </h1>
-            <button className='bg-[#ffffff] mx-auto px-[4vw] xss:px-[5vw] sm:px-[3.5vw] py-[1.5vw] xss:py-[3vw] sm:py-[1.3vw] lg:py-[1vw] lg:px-[2vw] xss:mt-[3vw] lg:mt-[2vw] rounded-full flex items-center justify-center'>
+            <button className='bg-[#ffffff] hover:bg-[#dfdfdf] btnn mx-auto px-[4vw] xss:px-[5vw] sm:px-[3.5vw] py-[1.5vw] xss:py-[3vw] sm:py-[1.3vw] lg:py-[1vw] lg:px-[2vw] xss:mt-[3vw] lg:mt-[2vw] rounded-full flex items-center justify-center'>
               <h1 className='text-black font-semibold text-[3vw] xss:text-[3.5vw] sm:text-[2.5vw] md:text-[2vw] lg:text-[1.6vw] flex items-center whitespace-nowrap'>
                 Get Started
-                <i className="ri-arrow-right-line text-black ml-[1vw]"></i>
+                <i className="ri-arrow-right-line text-black ml-[1vw] button-arrow"></i>
               </h1>
             </button>
           </div>
 
-          <div className='mb-72'>
+          <div className='mb-10'>
             <h1 className='text-center  text-[16vw] tracking-wider font-pop leading-none opacity-25 bg-gradient-to-b from-[#FFFFFF] to-[#414141] text-transparent bg-clip-text'>Contact Us</h1>
             <div className='lg:px-[5rem] md:px-[5rem] sm:px-[3.5rem] xs:px-[3rem] xss:px-[2.4rem] sm:-translate-y-14 xss:-translate-y-6'>
               <div className='flex flex-col lg:flex-row justify-between'>
                 <div className='flex flex-col sm:space-y-8 xss:space-y-5 lg:w-[45%] mb-10 lg:mb-0'>
                   <div>
-                    <h1 className='leading-none font-pop font-bold lg:text-6xl md:text-6xl sm:text-5xl xss:text-5xl text-gray-100 whitespace-nowrap'>Reach Out <i class="ri-arrow-right-up-line bg-gradient-to-bl lg:text-7xl xss:text-5xl  md:text-6xl sm:text-5xl from-[#FFFFFF] to-[#414141] text-transparent bg-clip-text"></i></h1>
+                    <h1 className='leading-none font-pop font-bold lg:text-6xl md:text-6xl sm:text-5xl xss:text-5xl text-gray-100 whitespace-nowrap'>Reach Out <i className="ri-arrow-right-up-line bg-gradient-to-bl lg:text-7xl xss:text-5xl  md:text-6xl sm:text-5xl from-[#FFFFFF] to-[#414141] text-transparent bg-clip-text"></i></h1>
                     <p className='mt-3 text-[16px] md:text-[1.35rem] whitespace-normal lg:text-[1.17rem] w-full lg:w-[35vw] text-[#d2d2d2] leading-[1.2] opacity-90'>Have a question or need assistance? Whether you're seeking support, have an inquiry, or simply want to connect, feel free to reach out. I'm always here to help and will make every effort to respond to you. I look forward to connecting with you soon.</p>
                     <div className='mt-10 flex-col mb-5'>
                       <div className='flex items-center mb-4'>
@@ -143,41 +150,44 @@ const Landing = () => {
                     </div>
                   </div>
                   <div className='flex mb-5'>
-                    <div className='flex md:w-[50px] md:h-[50px] sm:w-[45px] sm:h-[45px] xss:w-[45px] xss:h-[45px] bg-[#EBEBEB] mr-5 rounded-full justify-center items-center blur-thing'>
-                      <i class="ri-github-fill    text-black md:text-[40px] xss:text-[35px]"></i>
-                    </div>
-                    <div className='flex md:w-[50px] md:h-[50px] sm:w-[45px] sm:h-[45px] xss:w-[45px] xss:h-[45px] bg-[#EBEBEB] mr-5 rounded-full justify-center items-center'>
-                      <i class="ri-twitter-x-line text-black md:text-[32px] xss:text-[30px]"></i>
-                    </div>
-                    <div className='flex md:w-[50px] md:h-[50px] sm:w-[45px] sm:h-[45px] xss:w-[45px] xss:h-[45px] bg-[#EBEBEB] mr-5 rounded-full justify-center items-center'>
-                      <i class="ri-instagram-line text-black md:text-[38px] xss:text-[32px]"></i>
-                    </div>
+                    <a className='flex glow md:w-[50px] md:h-[50px] sm:w-[45px] sm:h-[45px] xss:w-[45px] xss:h-[45px] bg-[#EBEBEB] hover:bg-white mr-5 rounded-full justify-center items-center blur-thing' target="_blank" href='https://github.com/SiddDevZ'>
+                      <i className="ri-github-fill    text-black md:text-[40px] xss:text-[35px]"></i>
+                    </a>
+                    <a className='flex glow md:w-[50px] md:h-[50px] sm:w-[45px] sm:h-[45px] xss:w-[45px] xss:h-[45px] bg-[#EBEBEB] hover:bg-white mr-5 rounded-full justify-center items-center' target="_blank" href=''>
+                      <i className="ri-twitter-x-line text-black md:text-[32px] xss:text-[30px]"></i>
+                    </a>
+                    <a className='flex glow md:w-[50px] md:h-[50px] sm:w-[45px] sm:h-[45px] xss:w-[45px] xss:h-[45px] bg-[#EBEBEB] hover:bg-white mr-5 rounded-full justify-center items-center' target="_blank" href='https://www.instagram.com/siddharth_jorwal/'>
+                      <i className="ri-instagram-line text-black md:text-[38px] xss:text-[32px]"></i>
+                    </a>
                   </div>
                 </div>
             
                 <div className='w-full lg:w-[45%] border border-[#c0c0c0] p-7 rounded-xl'>
-                  <form className='xss:space-y-4 md:space-y-6'>
+                  <form className='xss:space-y-4 md:space-y-6' onSubmit={handleSubmit}>
                     <div className='flex flex-col sm:flex-row justify-between space-y-3 sm:space-y-0 sm:space-x-3'>
                       <div className='w-full sm:w-1/3'>
-                        <input type="text" id="name" placeholder='Name' className='h-12 block bg-[rgba(103,103,103,0.2)] pl-4 w-full border rounded-2xl shadow-sm text-gray-100' />
+                        <input type="text" id="name" placeholder='Name' value={name} onChange={(e) => setName(e.target.value)} className='h-12 block bg-[rgba(103,103,103,0.2)] pl-4 w-full border rounded-2xl shadow-sm text-gray-100' />
                       </div>
                       <div className='w-full sm:w-2/3'>
-                        <input type="email" id="email" placeholder='Email' className='h-12 block bg-[rgba(103,103,103,0.2)] pl-4 w-full border rounded-2xl shadow-sm text-gray-100' />
+                        <input type="email" id="email" placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)} className='h-12 block bg-[rgba(103,103,103,0.2)] pl-4 w-full border rounded-2xl shadow-sm text-gray-100' />
                       </div>
                     </div>
                     <div>
-                      <textarea id="message" rows="4" placeholder='Message' className='mt-1 block w-full bg-[rgba(103,103,103,0.2)] pl-4 pt-2 h-72 border rounded-2xl shadow-sm text-gray-100'></textarea>
+                      <textarea id="message" rows="4" placeholder='Message' value={message} onChange={(e) => setMessage(e.target.value)} className='mt-1 block w-full bg-[rgba(103,103,103,0.2)] pl-4 pt-2 h-72 border rounded-2xl shadow-sm text-gray-100'></textarea>
                     </div>
                     <div className='flex justify-center'>
-                      <button className='flex-grow bg-red-500 bg-gradient-to-r from-[#FFFFFF] to-[#B7B7B7] font-pop text-xl h-12 rounded-full text-black'>Submit</button>
+                      <button className='flex-grow bg-red-500 glow bg-gradient-to-r from-[#FFFFFF] to-[#B7B7B7] font-pop text-xl h-12 rounded-full text-black' type="submit">Submit</button>
                     </div>
                   </form>
                 </div>
               </div>
             </div>
           </div>
+
+          <Footer />
         </div>
       </div>
+      <ToastContainer />
     </>
   )
 }
