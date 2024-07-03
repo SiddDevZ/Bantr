@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Navbar.css'
 
-const Navbar = () => {
+const Navbar = ({ onContactClick }) => {
     useEffect(() => {
         const handleScroll = () => {
           const scrollPosition = window.scrollY;
@@ -29,9 +29,9 @@ const Navbar = () => {
           </div>
 
           <div className='sm:flex xss:hidden font-pop font-semibold text-md gap-14 text-md'>
-            <h3 className='text-white hover:underline cursor-pointer'>Home</h3>
-            <h3 className='text-white hover:underline cursor-pointer'>Contact</h3>
-            <h3 className='text-white hover:underline cursor-pointer'>Careers</h3>
+            <Link to="/" className='text-white hover:underline cursor-pointer'>Home</Link>
+            <button onClick={onContactClick} className='text-white hover:underline cursor-pointer'>Contact</button>
+            <a href='https://www.youtube.com/watch?v=dQw4w9WgXcQ' target='_blank' className='text-white hover:underline cursor-pointer'>Careers</a>
           </div>
 
           <Link to="/login" className='px-5 py-2.5 rounded-full btn'>

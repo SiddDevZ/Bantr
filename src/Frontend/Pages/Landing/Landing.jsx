@@ -13,6 +13,13 @@ const Landing = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
 
+  const handleContactClick = () => {
+    const contact = document.getElementById("contact");
+    if (contact) {
+      contact.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     // console.log('Webhook URL:', process.env.REACT_APP_DISCORD_WEBHOOK_URL);
@@ -73,7 +80,7 @@ const Landing = () => {
         <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-yell [mask-image:radial-gradient(ellipse_at_center,transparent_0%,black)]"></div>
         <div className='z-20 animate-in'>
 
-          <Navbar />
+          <Navbar onContactClick={handleContactClick} />
 
           <div className='emoji-container'>
             <img src="iphone_emojis/skull.png" alt="" className='ae e1 sm:min-h-[150px] xss:min-h-[120px]'/>
@@ -149,7 +156,7 @@ const Landing = () => {
             </Link>
           </div>
 
-          <div className='mb-10'>
+          <div className='mb-10' id='contact'>
             <h1 className='text-center  text-[16vw] tracking-wider font-pop leading-none opacity-25 bg-gradient-to-b from-[#FFFFFF] to-[#414141] text-transparent bg-clip-text unselectable'>Contact Us</h1>
             <div className='lg:px-[5rem] md:px-[5rem] sm:px-[3.5rem] xs:px-[3rem] xss:px-[2.4rem] sm:-translate-y-14 xss:-translate-y-6'>
               <div className='flex flex-col lg:flex-row justify-between'>
@@ -208,7 +215,7 @@ const Landing = () => {
             </div>
           </div>
 
-          <Footer />
+          <Footer onContactClick={handleContactClick} />
         </div>
       </div>
     </>
