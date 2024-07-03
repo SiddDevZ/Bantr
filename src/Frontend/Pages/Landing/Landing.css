@@ -1,8 +1,10 @@
 body{
-    background-color: #403300;
+    
     overflow-x: hidden;
 }
-
+.bg{
+    background-color: #453700;
+}
 .btn{
     background-color: #EEEEEE;
     transition: 0.2s all ease-in-out;

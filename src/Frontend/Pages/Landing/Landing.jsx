@@ -68,7 +68,7 @@ const Landing = () => {
 
   return (
     <>
-      <div className="h-max w-full bg-grid-white/[0.06] relative flex">
+      <div className="bg h-max w-full bg-grid-white/[0.06] relative flex">
         {/* Radial gradient for the container to give a faded look */}
         <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-yell [mask-image:radial-gradient(ellipse_at_center,transparent_0%,black)]"></div>
         <div className='z-20 animate-in'>
@@ -84,13 +84,13 @@ const Landing = () => {
             <img src="iphone_emojis/blushing.png" alt="" className='ae e6 sm:min-h-[150px] xss:min-h-[120px]'/>
           </div>
 
-          <main className='relative w-100 max-w-5xl mx-auto xss:mt-[25vh] xs:mt-[21vh] md:mt-[15vh] lg:mt-[7vh] sm:pt-24 lg:pt-32'>
+          <main className='relative w-100 max-w-5xl mx-auto xss:mt-[18vh] xs:mt-[16vh] md:mt-[15vh] lg:mt-[7vh] sm:pt-24 lg:pt-32'>
             <div className='w-full'>
               <h1 className='px-1 text-white font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight text-center whitespace-break-spaces'>Imagine a place where you can share Memes and have Fun.</h1>
               <p className='px-3 mt-4 text-lg text-center max-w-3xl mx-auto text-[#e4e4e4]'>Bantr is a vibrant community to make new friends and connect with like-minded people. We like to spread positivity and fun by humor and laughter.</p>
-              <div className='lg:mt-7 xss:mt-8 flex justify-center space-x-6'>
-                <Link to="/sign-in" className='bg-[#FAC304] btnn sm:px-6 sm:py-3 xs:px-[5vw] xs:py-[2vw] xss:px-[3.5vw] xss:py-[1.5vw] rounded-lg flex'><h1 className='text-black font-semibold xs:text-xl xss:text-lg whitespace-nowrap'>Get Started</h1><i className="ri-arrow-right-line text-black text-2xl font-bold ml-2 button-arrow"></i></Link>
-                <Link to="/sign-in" className='bg-[#242424] btnn sm:px-6 sm:py-3 xs:px-[5vw] xs:py-[2vw] xss:px-[3.5vw] xss:py-[1.5vw] rounded-lg flex'><h1 className='text-white font-semibold xs:text-xl xss:text-lg whitespace-nowrap'>Start As Guest</h1><i className="ri-arrow-right-line text-white text-2xl font-bold ml-2 button-arrow"></i></Link>
+              <div className='lg:mt-7 xss:mt-8 flex justify-center'>
+                <Link to="/login" className='bg-[#FAC304] md:mr-6 sm:mr-5 xs:mr-4 xss:mr-3 btnn sm:px-6 sm:py-3 xs:px-[5vw] xs:py-[2vw] xss:px-[3.5vw] xss:py-[1.5vw] rounded-lg flex'><h1 className='text-black font-semibold xs:text-xl xss:text-lg whitespace-nowrap'>Get Started</h1><i className="ri-arrow-right-line text-black text-2xl font-bold ml-2 button-arrow"></i></Link>
+                <Link to="/login" className='bg-[#242424] btnn sm:px-6 sm:py-3 xs:px-[5vw] xs:py-[2vw] xss:px-[3.5vw] xss:py-[1.5vw] rounded-lg flex'><h1 className='text-white font-semibold xs:text-xl xss:text-lg whitespace-nowrap'>Start As Guest</h1><i className="ri-arrow-right-line text-white text-2xl font-bold ml-2 button-arrow"></i></Link>
               </div>
             </div>
           </main>
@@ -141,7 +141,7 @@ const Landing = () => {
               <br />
               <span className='bg-gradient-to-r from-[#EEC800] to-[#FF8A00] text-transparent bg-clip-text'>JOIN US NOW!</span>
             </h1>
-            <Link to="/sign-in" className='bg-[#ffffff] hover:bg-[#dfdfdf] btnn mx-auto px-[4vw] xss:px-[5vw] sm:px-[3.5vw] py-[1.5vw] xss:py-[3vw] sm:py-[1.3vw] lg:py-[1vw] lg:px-[2vw] xss:mt-[3vw] lg:mt-[2vw] rounded-full flex items-center justify-center'>
+            <Link to="/login" className='bg-[#ffffff] hover:bg-[#dfdfdf] btnn mx-auto px-[4vw] xss:px-[5vw] sm:px-[3.5vw] py-[1.5vw] xss:py-[3vw] sm:py-[1.3vw] lg:py-[1vw] lg:px-[2vw] xss:mt-[3vw] lg:mt-[2vw] rounded-full flex items-center justify-center'>
               <h1 className='text-black font-semibold text-[3vw] xss:text-[3.5vw] sm:text-[2.5vw] md:text-[2vw] lg:text-[1.6vw] flex items-center whitespace-nowrap'>
                 Get Started
                 <i className="ri-arrow-right-line text-black ml-[1vw] button-arrow"></i>
@@ -150,7 +150,7 @@ const Landing = () => {
           </div>
 
           <div className='mb-10'>
-            <h1 className='text-center  text-[16vw] tracking-wider font-pop leading-none opacity-25 bg-gradient-to-b from-[#FFFFFF] to-[#414141] text-transparent bg-clip-text'>Contact Us</h1>
+            <h1 className='text-center  text-[16vw] tracking-wider font-pop leading-none opacity-25 bg-gradient-to-b from-[#FFFFFF] to-[#414141] text-transparent bg-clip-text unselectable'>Contact Us</h1>
             <div className='lg:px-[5rem] md:px-[5rem] sm:px-[3.5rem] xs:px-[3rem] xss:px-[2.4rem] sm:-translate-y-14 xss:-translate-y-6'>
               <div className='flex flex-col lg:flex-row justify-between'>
                 <div className='flex flex-col sm:space-y-8 xss:space-y-5 lg:w-[45%] mb-10 lg:mb-0'>
@@ -189,14 +189,14 @@ const Landing = () => {
                   <form className='xss:space-y-4 md:space-y-6' onSubmit={handleSubmit}>
                     <div className='flex flex-col sm:flex-row justify-between space-y-3 sm:space-y-0 sm:space-x-3'>
                       <div className='w-full sm:w-1/3'>
-                        <input type="text" id="name" placeholder='Name' value={name} onChange={(e) => setName(e.target.value)} className='h-12 block bg-[rgba(103,103,103,0.2)] pl-4 w-full border rounded-2xl shadow-sm text-gray-100' />
+                        <input type="text" id="name" placeholder='Name' value={name} onChange={(e) => setName(e.target.value)} className='h-12 block bg-[rgba(103,103,103,0.2)] pl-4 w-full border rounded-2xl shadow-sm text-gray-100 focus:outline-none focus:ring-0 focus:border-white' />
                       </div>
                       <div className='w-full sm:w-2/3'>
-                        <input type="email" id="email" placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)} className='h-12 block bg-[rgba(103,103,103,0.2)] pl-4 w-full border rounded-2xl shadow-sm text-gray-100' />
+                        <input type="email" id="email" placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)} className='h-12 block bg-[rgba(103,103,103,0.2)] pl-4 w-full border rounded-2xl shadow-sm text-gray-100 focus:outline-none focus:ring-0 focus:border-white' />
                       </div>
                     </div>
                     <div>
-                      <textarea id="message" rows="4" placeholder='Message' value={message} onChange={(e) => setMessage(e.target.value)} className='mt-1 block w-full bg-[rgba(103,103,103,0.2)] pl-4 pt-2 h-72 border rounded-2xl shadow-sm text-gray-100'></textarea>
+                      <textarea id="message" rows="4" placeholder='Message' value={message} onChange={(e) => setMessage(e.target.value)} className='mt-1 block w-full bg-[rgba(103,103,103,0.2)] pl-4 pt-2 h-72 border rounded-2xl shadow-sm text-gray-100 focus:outline-none focus:ring-0 focus:border-white'></textarea>
                     </div>
                     <div className='flex justify-center'>
                       <button className='flex-grow bg-red-500 glow bg-gradient-to-r from-[#FFFFFF] to-[#B7B7B7] font-pop text-xl h-12 rounded-full text-black' type="submit">Submit</button>

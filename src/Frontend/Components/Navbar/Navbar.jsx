@@ -34,7 +34,7 @@ const Navbar = () => {
             <h3 className='text-white hover:underline cursor-pointer'>Careers</h3>
           </div>
 
-          <Link to="/sign-in" className='px-5 py-2.5 rounded-full btn'>
+          <Link to="/login" className='px-5 py-2.5 rounded-full btn'>
             <h3 className='font-pop font-semibold text-black'>Open Bantr</h3>
           </Link>
       </nav>
