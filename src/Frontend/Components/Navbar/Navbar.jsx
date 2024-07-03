@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import './Navbar.css'
 
 const Navbar = () => {
@@ -33,9 +34,9 @@ const Navbar = () => {
             <h3 className='text-white hover:underline cursor-pointer'>Careers</h3>
           </div>
 
-          <button className='px-5 py-2.5 rounded-full btn'>
+          <Link to="/sign-in" className='px-5 py-2.5 rounded-full btn'>
             <h3 className='font-pop font-semibold text-black'>Open Bantr</h3>
-          </button>
+          </Link>
       </nav>
     )
 }

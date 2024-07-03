@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import './Landing.css'
 import 'remixicon/fonts/remixicon.css'
 import Monitor from '../../Components/Monitor/Monitor';
 import Navbar from '../../Components/Navbar/Navbar';
 import Footer from '../../Components/Footer/Footer'
 import { ToastContainer, toast, Bounce } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Landing = () => {
   const [name, setName] = useState('');
@@ -13,8 +15,9 @@ const Landing = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const link = '';
+    // console.log('Webhook URL:', process.env.REACT_APP_DISCORD_WEBHOOK_URL);
+    // const link = process.env.REACT_APP_DISCORD_WEBHOOK_URL;
+    const link = import.meta.env.VITE_URL;
 
     const payload = {
       content: `# **__${name}\__**\n**${email}**\n\`\`\`${message}\`\`\``
@@ -29,16 +32,36 @@ const Landing = () => {
         body: JSON.stringify(payload),
       });
       if (response.ok) {
-        alert('Message sent successfully!');
+        toast.success('Message sent successfully!', {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
         setName('');
         setEmail('');
         setMessage('');
       } else {
-        alert('Failed to send message. Please try again.');
+        toast.error("Failed to send message. Please try again.", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+          });
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('An error occurred. Please try again.');
+      toast.error("An error occurred. Please try again.", {position: "bottom-right", autoClose: 10000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark", transition: Bounce,});
     }
   }
 
@@ -66,8 +89,8 @@ const Landing = () => {
               <h1 className='px-1 text-white font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight text-center whitespace-break-spaces'>Imagine a place where you can share Memes and have Fun.</h1>
               <p className='px-3 mt-4 text-lg text-center max-w-3xl mx-auto text-[#e4e4e4]'>Bantr is a vibrant community to make new friends and connect with like-minded people. We like to spread positivity and fun by humor and laughter.</p>
               <div className='lg:mt-7 xss:mt-8 flex justify-center space-x-6'>
-                <button className='bg-[#FAC304] btnn sm:px-6 sm:py-3 xs:px-[5vw] xs:py-[2vw] xss:px-[3.5vw] xss:py-[1.5vw] rounded-lg flex'><h1 className='text-black font-semibold xs:text-xl xss:text-lg whitespace-nowrap'>Get Started</h1><i className="ri-arrow-right-line text-black text-2xl font-bold ml-2 button-arrow"></i></button>
-                <button className='bg-[#242424] btnn sm:px-6 sm:py-3 xs:px-[5vw] xs:py-[2vw] xss:px-[3.5vw] xss:py-[1.5vw] rounded-lg flex'><h1 className='text-white font-semibold xs:text-xl xss:text-lg whitespace-nowrap'>Start As Guest</h1><i className="ri-arrow-right-line text-white text-2xl font-bold ml-2 button-arrow"></i></button>
+                <Link to="/sign-in" className='bg-[#FAC304] btnn sm:px-6 sm:py-3 xs:px-[5vw] xs:py-[2vw] xss:px-[3.5vw] xss:py-[1.5vw] rounded-lg flex'><h1 className='text-black font-semibold xs:text-xl xss:text-lg whitespace-nowrap'>Get Started</h1><i className="ri-arrow-right-line text-black text-2xl font-bold ml-2 button-arrow"></i></Link>
+                <Link to="/sign-in" className='bg-[#242424] btnn sm:px-6 sm:py-3 xs:px-[5vw] xs:py-[2vw] xss:px-[3.5vw] xss:py-[1.5vw] rounded-lg flex'><h1 className='text-white font-semibold xs:text-xl xss:text-lg whitespace-nowrap'>Start As Guest</h1><i className="ri-arrow-right-line text-white text-2xl font-bold ml-2 button-arrow"></i></Link>
               </div>
             </div>
           </main>
@@ -118,12 +141,12 @@ const Landing = () => {
               <br />
               <span className='bg-gradient-to-r from-[#EEC800] to-[#FF8A00] text-transparent bg-clip-text'>JOIN US NOW!</span>
             </h1>
-            <button className='bg-[#ffffff] hover:bg-[#dfdfdf] btnn mx-auto px-[4vw] xss:px-[5vw] sm:px-[3.5vw] py-[1.5vw] xss:py-[3vw] sm:py-[1.3vw] lg:py-[1vw] lg:px-[2vw] xss:mt-[3vw] lg:mt-[2vw] rounded-full flex items-center justify-center'>
+            <Link to="/sign-in" className='bg-[#ffffff] hover:bg-[#dfdfdf] btnn mx-auto px-[4vw] xss:px-[5vw] sm:px-[3.5vw] py-[1.5vw] xss:py-[3vw] sm:py-[1.3vw] lg:py-[1vw] lg:px-[2vw] xss:mt-[3vw] lg:mt-[2vw] rounded-full flex items-center justify-center'>
               <h1 className='text-black font-semibold text-[3vw] xss:text-[3.5vw] sm:text-[2.5vw] md:text-[2vw] lg:text-[1.6vw] flex items-center whitespace-nowrap'>
                 Get Started
                 <i className="ri-arrow-right-line text-black ml-[1vw] button-arrow"></i>
               </h1>
-            </button>
+            </Link>
           </div>
 
           <div className='mb-10'>
@@ -181,13 +204,13 @@ const Landing = () => {
                   </form>
                 </div>
               </div>
+              <ToastContainer />
             </div>
           </div>
 
           <Footer />
         </div>
       </div>
-      <ToastContainer />
     </>
   )
 }
