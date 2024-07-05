@@ -10,11 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-oauth/google": "^0.12.1",
     "@react-three/drei": "^9.107.2",
     "@react-three/fiber": "^8.16.8",
     "clsx": "^2.1.1",
     "dotenv": "^16.4.5",
     "framer-motion": "^11.2.11",
+    "js-cookie": "^3.0.5",
     "million": "^3.1.11",
     "mini-svg-data-uri": "^1.4.4",
     "react": "^18.3.1",
@@ -22,6 +24,7 @@
     "react-router-dom": "^6.23.1",
     "react-toastify": "^10.0.5",
     "remixicon": "^4.3.0",
+    "sonner": "^1.5.0",
     "tailwind-merge": "^2.3.0",
     "three": "^0.165.0"
   },

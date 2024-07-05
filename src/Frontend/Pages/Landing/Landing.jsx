@@ -96,7 +96,7 @@ const Landing = () => {
               <h1 className='px-1 text-white font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight text-center whitespace-break-spaces'>Imagine a place where you can share Memes and have Fun.</h1>
               <p className='px-3 mt-4 text-lg text-center max-w-3xl mx-auto text-[#e4e4e4]'>Bantr is a vibrant community to make new friends and connect with like-minded people. We like to spread positivity and fun by humor and laughter.</p>
               <div className='lg:mt-7 xss:mt-8 flex justify-center'>
-                <Link to="/login" className='bg-[#FAC304] md:mr-6 sm:mr-5 xs:mr-4 xss:mr-3 btnn sm:px-6 sm:py-3 xs:px-[5vw] xs:py-[2vw] xss:px-[3.5vw] xss:py-[1.5vw] rounded-lg flex'><h1 className='text-black font-semibold xs:text-xl xss:text-lg whitespace-nowrap'>Get Started</h1><i className="ri-arrow-right-line text-black text-2xl font-bold ml-2 button-arrow"></i></Link>
+                <Link to="/register" className='bg-[#FAC304] md:mr-6 sm:mr-5 xs:mr-4 xss:mr-3 btnn sm:px-6 sm:py-3 xs:px-[5vw] xs:py-[2vw] xss:px-[3.5vw] xss:py-[1.5vw] rounded-lg flex'><h1 className='text-black font-semibold xs:text-xl xss:text-lg whitespace-nowrap'>Get Started</h1><i className="ri-arrow-right-line text-black text-2xl font-bold ml-2 button-arrow"></i></Link>
                 <Link to="/login" className='bg-[#242424] btnn sm:px-6 sm:py-3 xs:px-[5vw] xs:py-[2vw] xss:px-[3.5vw] xss:py-[1.5vw] rounded-lg flex'><h1 className='text-white font-semibold xs:text-xl xss:text-lg whitespace-nowrap'>Start As Guest</h1><i className="ri-arrow-right-line text-white text-2xl font-bold ml-2 button-arrow"></i></Link>
               </div>
             </div>
@@ -148,7 +148,7 @@ const Landing = () => {
               <br />
               <span className='bg-gradient-to-r from-[#EEC800] to-[#FF8A00] text-transparent bg-clip-text'>JOIN US NOW!</span>
             </h1>
-            <Link to="/login" className='bg-[#ffffff] hover:bg-[#dfdfdf] btnn mx-auto px-[4vw] xss:px-[5vw] sm:px-[3.5vw] py-[1.5vw] xss:py-[3vw] sm:py-[1.3vw] lg:py-[1vw] lg:px-[2vw] xss:mt-[3vw] lg:mt-[2vw] rounded-full flex items-center justify-center'>
+            <Link to="/register" className='bg-[#ffffff] hover:bg-[#dfdfdf] btnn mx-auto px-[4vw] xss:px-[5vw] sm:px-[3.5vw] py-[1.5vw] xss:py-[3vw] sm:py-[1.3vw] lg:py-[1vw] lg:px-[2vw] xss:mt-[3vw] lg:mt-[2vw] rounded-full flex items-center justify-center'>
               <h1 className='text-black font-semibold text-[3vw] xss:text-[3.5vw] sm:text-[2.5vw] md:text-[2vw] lg:text-[1.6vw] flex items-center whitespace-nowrap'>
                 Get Started
                 <i className="ri-arrow-right-line text-black ml-[1vw] button-arrow"></i>
