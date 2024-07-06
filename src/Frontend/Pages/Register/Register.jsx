@@ -4,6 +4,11 @@ import 'remixicon/fonts/remixicon.css'
 import { Link } from 'react-router-dom'
 import { Toaster, toast } from 'sonner';
 import Cookies from 'js-cookie';
+import { useGoogleLogin } from '@react-oauth/google';
+
+const CLIENT_ID = "1258869862025920572";
+const REDIRECT_URI = "http://localhost:5173/auth/discord/callback";
+// import axios from 'axios';
 
 const Register = () => {
 
@@ -13,9 +18,43 @@ const Register = () => {
     const [emailError, setEmailError] = useState(false);
     const [password, setPassword] = useState('');
 
-    const googleLogin = async () => {
+    const discordLogin = () => {
+        const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=identify%20email`;
+        window.location.href = authUrl;
+    };
 
-    }
+
+    const googleLogin = useGoogleLogin({
+        onSuccess: async (response) => {
+          try {
+            const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+              headers: {
+                "Authorization": `Bearer ${response.access_token}`
+              }
+            });
+      
+            if (!res.ok) {
+              throw new Error(`HTTP error! status: ${res.status}`);
+            }
+      
+            const data = await res.json();
+            console.log(JSON.stringify(data));
+            const serverResponse = await fetch(`http://localhost:3000/googlelogin`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            const result = await serverResponse.json();
+            console.log(result)
+
+          } catch (err) {
+            console.log('Error fetching user data:', err);
+          }
+        },
+        onError: (error) => console.log('Login Failed:', error)
+    });
 
     const register = async (e) => {
         e.preventDefault();
@@ -94,10 +133,10 @@ const Register = () => {
                       className="inset-0 w-full h-full object-cover rounded-xl shadow-2xl"
                     />
                 </div>
-                <div className='w-[550px] mx-auto pt-10 px-4 h-screen animate-in'>
+                <div className='w-[550px] mx-auto sm:pt-10 xss:pt-4 px-4 h-screen animate-in'>
                     <Link to="/" className='flex items-center gap-1'><i className="ri-arrow-left-s-line text-2xl"></i><span className='-translate-y-0.5'>Back to Home</span></Link>
                     <div className='md:px-12 sm:px-10 xs:px-7 xss:px-[1vw]'>
-                        <h1 className='text-4xl mt-[2vh] font-pop font-semibold mb-1 whitespace-nowrap'><span className='bg-gradient-to-r from-[#ebebeb] to-[#c8c8c8] text-transparent bg-clip-text'>Create New Account! </span>😎</h1>
+                        <h1 className='sm:text-4xl xs:text-3xl xss:text-[1.65rem]  mt-[2vh] font-pop font-semibold mb-1 whitespace-nowrap'><span className='bg-gradient-to-r from-[#ebebeb] to-[#c8c8c8] text-transparent bg-clip-text'>Create New Account! </span>😎</h1>
                         <p className='text-gray-300'>Enter your details below to Register</p>
                         <div className="w-full  mt-[3vh] h-0.5 bg-[#e0e0e01d]"></div>
                         
@@ -120,7 +159,7 @@ const Register = () => {
                         </form>
                         <div className="w-full  mt-[1.4vh] h-0.5 bg-[#e0e0e01d]"></div>
                         <button onClick={() => googleLogin()} className='h-14 mt-[2.5vh] w-full flex items-center justify-center border border-gray-400 hover:border-white transition-all duration-100 rounded-full gap-2'><img src="google.webp" alt="" className='h-4/5' /><span className='font-semibold'>Continue with Google</span></button>
-                        <button className='h-14 mt-[2vh] w-full flex items-center justify-center border border-gray-400 hover:border-white transition-all duration-100 rounded-full gap-3'><img src="discord.webp" alt="" className='h-3/6' /><span className='font-semibold'>Continue with Discord</span></button>
+                        <button onClick={() => discordLogin()} className='h-14 mt-[2vh] w-full flex items-center justify-center border border-gray-400 hover:border-white transition-all duration-100 rounded-full gap-3'><img src="discord.webp" alt="" className='h-3/6' /><span className='font-semibold'>Continue with Discord</span></button>
                     </div>
                     <Toaster richColors theme="dark" />
                 </div>

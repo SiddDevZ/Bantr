@@ -4,6 +4,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import Landing from './Pages/Landing/Landing';
 import Login from './Pages/Login/Login';
 import Register from './Pages/Register/Register';
+import AuthCallback from './Components/Callback/Discord'
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route exact path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/auth/discord/callback" element={<AuthCallback />} />
           {/* <Route path="/chat" element={<Chat />} /> */}
           {/* <Route path="/contact" element={<Home />} */}
         </Routes>
