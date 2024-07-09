@@ -29,6 +29,7 @@ router.post("/", loginLimiter, async (req, res) => {
                 token: token,
                 verificationToken: "none_required",
                 verified: true,
+                avatar: req.body.picture,
             });
 
             await newUser.save()

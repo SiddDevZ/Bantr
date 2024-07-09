@@ -20,6 +20,8 @@ router.post("/", async (req, res) => {
 
         const token = crypto.randomBytes(24).toString("hex");
 
+        const avatar = `https://cdn.discordapp.com/avatars/${req.body.id}/${req.body.avatar}.png`
+
         const newUser = new userModel({
           username: name,
           email: req.body.email,
@@ -27,6 +29,7 @@ router.post("/", async (req, res) => {
           token: token,
           verificationToken: "none_required",
           verified: true,
+          avatar: avatar
         });
 
         await newUser.save();

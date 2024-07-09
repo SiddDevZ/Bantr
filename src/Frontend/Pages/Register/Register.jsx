@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import './Register.css'
 import 'remixicon/fonts/remixicon.css'
 import { Link } from 'react-router-dom'
@@ -17,6 +18,7 @@ const Register = () => {
     const [email, setEmail] = useState('');
     const [emailError, setEmailError] = useState(false);
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     const discordLogin = () => {
         const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=identify%20email`;
@@ -39,7 +41,7 @@ const Register = () => {
       
             const data = await res.json();
             console.log(JSON.stringify(data));
-            const serverResponse = await fetch(`http://localhost:3000/googlelogin`, {
+            const serverResponse = await fetch(`http://localhost:3000/api/googlelogin`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -47,7 +49,9 @@ const Register = () => {
                 body: JSON.stringify(data)
             });
             const result = await serverResponse.json();
-            console.log(result)
+            Cookies.set('token', result, { expires: 365 * 20, sameSite: 'None', secure: true });
+            console.log(result);
+            navigate('/chat');
 
           } catch (err) {
             console.log('Error fetching user data:', err);
@@ -73,7 +77,7 @@ const Register = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:3000/register`, {
+            const response = await fetch(`http://localhost:3000/api/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Landing.css'
 import 'remixicon/fonts/remixicon.css'
-import Monitor from '../../Components/Monitor/Monitor';
 import Navbar from '../../Components/Navbar/Navbar';
 import Footer from '../../Components/Footer/Footer'
 import { ToastContainer, toast, Bounce } from 'react-toastify';

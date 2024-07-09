@@ -1,10 +1,11 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import Landing from './Pages/Landing/Landing';
 import Login from './Pages/Login/Login';
 import Register from './Pages/Register/Register';
 import AuthCallback from './Components/Callback/Discord'
+import Chat from './Pages/Chat/Chat';
 
 function App() {
   return (
@@ -16,6 +17,9 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/auth/discord/callback" element={<AuthCallback />} />
           {/* <Route path="/chat" element={<Chat />} /> */}
+          <Route path="/chat/:serverId/:channelId" element={<Chat />} />
+          <Route path="/chat/:serverId" element={<Chat />} />
+          <Route path="/chat" element={<Chat />} />
           {/* <Route path="/contact" element={<Home />} */}
         </Routes>
       </Router>

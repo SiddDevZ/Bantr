@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import './Login.css'
 import 'remixicon/fonts/remixicon.css'
 import { Link } from 'react-router-dom'
@@ -17,6 +18,7 @@ const Login = () => {
     const [emailError, setEmailError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     const discordLogin = () => {
         const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=identify%20email`;
@@ -38,7 +40,7 @@ const Login = () => {
       
             const data = await res.json();
             console.log(JSON.stringify(data));
-            const serverResponse = await fetch(`http://localhost:3000/googlelogin`, {
+            const serverResponse = await fetch(`http://localhost:3000/api/googlelogin`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -46,7 +48,9 @@ const Login = () => {
                 body: JSON.stringify(data)
             });
             const result = await serverResponse.json();
+            Cookies.set('token', result, { expires: 365 * 20, sameSite: 'None', secure: true });
             console.log(result)
+            navigate('/chat');
 
           } catch (err) {
             console.log('Error fetching user data:', err);
@@ -59,7 +63,7 @@ const Login = () => {
         e.preventDefault();
 
         try {
-            const response = await fetch(`http://localhost:3000/login`, {
+            const response = await fetch(`http://localhost:3000/api/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -120,7 +124,7 @@ const Login = () => {
                                 <input type="email" id="email" value={email} onClick={() => setEmailError(false)} onChange={(e) => setEmail(e.target.value)} placeholder='yourname@xyz.com' className={`${emailError ? 'bg-[#3c0000]' : 'bg-[#1f1f1f]'} h-14 w-full flex items-center pl-6 text-xl rounded-full form-border text-white focus:outline-none focus:ring-0 focus:border-slate-100`} />
                                 <label className="block text-gray-300 text-sm font-semibold translate-y-1.5" htmlFor="password">Password</label>
 
-                                <div class="relative w-full rounded-full bg-[#1f1f1f] flex items-center form-border focus-within:ring-0 focus-within:outline-none focus-within:border-slate-100">
+                                <div className="relative w-full rounded-full bg-[#1f1f1f] flex items-center form-border focus-within:ring-0 focus-within:outline-none focus-within:border-slate-100">
                                   <input type={showPassword ? 'text' : 'password'} id="password" onClick={() => setPasswordError(false)} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className={`${passwordError ? 'bg-[#3c0000]' : 'bg-[#1f1f1f]'} h-14 w-full pl-6 pr-12 text-lg text-white rounded-full focus:outline-none focus:ring-0 focus:border-slate-100`} />
                                   <button type="button" onClick={() => handleEye()} className={`${showPassword ? 'ri-eye-line' : 'ri-eye-close-line'} absolute right-6 text-xl top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer`}></button>
                                 </div>

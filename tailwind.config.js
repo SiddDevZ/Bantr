@@ -16,7 +16,8 @@ export default {
         '3xl': '1920px',
       },
       fontFamily: {
-        pop: ["Poppins", "sans-serif"]
+        pop: ["Poppins", "sans-serif"],
+        inter: ['Inter', 'sans-serif'],
       }
     },
   },

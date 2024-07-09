@@ -1,0 +1,10 @@
+.parent .child {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0.1s, opacity 0.1s;
+}
+
+.parent:hover .child {
+  visibility: visible;
+  opacity: 1;
+}

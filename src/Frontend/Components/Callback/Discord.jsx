@@ -27,7 +27,7 @@ const DiscordCallback = () => {
 
           const userData = await userResponse.json();
 
-          const backendResponse = await fetch('http://localhost:3000/discordlogin', {
+          const backendResponse = await fetch('http://localhost:3000/api/discordlogin', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -40,7 +40,7 @@ const DiscordCallback = () => {
             const backendData = await backendResponse.json();
             Cookies.set('token', backendData, { expires: 365 * 20, sameSite: 'None', secure: true });
 
-            navigate('/dashboard');
+            navigate('/chat');
 
           } else {
             throw new Error("Please try any other login method ", backendResponse.json())
