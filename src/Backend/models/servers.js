@@ -8,6 +8,7 @@ const channelSchema = new mongoose.Schema({
 
 const serverSchema = new mongoose.Schema({
     _id: { type: String, required: true },
+    owner: { type: String, required: true },
     serverName: { type: String, required: true },
     color: { type: String, required: true },
     channels: { type: [channelSchema], required: true }

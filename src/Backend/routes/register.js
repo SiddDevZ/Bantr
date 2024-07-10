@@ -24,12 +24,14 @@ router.post("/", registerLimiter, async (req, res) => {
             const token = crypto.randomBytes(24).toString("hex");
 
             const newUser = new userModel({
+                _id: Math.floor(Math.random() * 10000000000000),
                 username: req.body.username,
                 email: req.body.email,
                 password: req.body.password,
                 token: token,
                 verificationToken: verificationToken,
                 verified: false,
+                joinedServers: [4096277408633, 9854722554976],
             });
 
             newUser.save()

@@ -12,14 +12,17 @@ const Limiter = rateLimit({
 
 router.post("/", Limiter, async (req, res) => {
 
+    const owner = req.body.owner
+
     const newServer = new serverModel({
         _id: Math.floor(Math.random() * 10000000000000),
-        serverName: `Test Server`,
+        serverName: req.body.name,
         color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
+        owner: owner,
         channels: [
           {
             channelId: Math.floor(Math.random() * 10000000000000),
-            channelName: 'General',
+            channelName: 'Holy shit it worked omfg',
             type: 'server'
           },
           {
@@ -37,8 +40,10 @@ router.post("/", Limiter, async (req, res) => {
     
       try {
         const savedServer = await newServer.save();
-        console.log('Random Server Created:', savedServer);
+        res.status(200).json({ serverId: newServer._id })
+        // console.log('Server Created: ', savedServer);
       } catch (err) {
+        res.status(500).json(err)
         console.error(err);
       }
 });

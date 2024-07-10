@@ -2,7 +2,7 @@ import React from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react'
 
-const Selector = ({ servers }) => {
+const Selector = ({ servers, setCreateServerPopup }) => {
 
   const navigate = useNavigate();
   const { serverID } = useParams();
@@ -35,7 +35,7 @@ const Selector = ({ servers }) => {
 
   
   return (
-    <div className='w-full flex relative items-center overflow-x-auto py-[0.6rem] px-3 bg-[#2A2821] space-x-2'>
+    <div className='w-full flex relative items-center overflow-x-auto py-[0.6rem] unselectable px-3 bg-[#2A2821] space-x-2'>
         <div 
         key="inbox" 
         onClick={() => handleInboxClick()} 
@@ -66,7 +66,7 @@ const Selector = ({ servers }) => {
       )))}
       <div 
         key="add" 
-        onClick={() => handleInboxClick()} 
+        onClick={() => setCreateServerPopup(true)} 
         onMouseEnter={() => setHoveredServer("add")}
         onMouseLeave={() => setHoveredServer(null)}
         className="flex flex-col items-center"

@@ -23,6 +23,7 @@ router.post("/", loginLimiter, async (req, res) => {
             const token = crypto.randomBytes(24).toString("hex");
 
             const newUser = new userModel({
+                _id: Math.floor(Math.random() * 10000000000000),
                 username: req.body.given_name[0].toUpperCase() + req.body.given_name.slice(1),
                 email: req.body.email,
                 password: token,
@@ -30,6 +31,7 @@ router.post("/", loginLimiter, async (req, res) => {
                 verificationToken: "none_required",
                 verified: true,
                 avatar: req.body.picture,
+                joinedServers: [4096277408633, 9854722554976],
             });
 
             await newUser.save()
