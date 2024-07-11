@@ -11,6 +11,7 @@ const loginRoute = require("./routes/login");
 const googleRoute = require("./routes/googleLogin");
 const discordRoute = require("./routes/discordLogin")
 const userRoute = require("./routes/fetchUser");
+const inviteRoute = require("./routes/invite");
 
 const port = 3000;
 const app = express();
@@ -29,6 +30,7 @@ app.use("/api/fetchservers", fetchChannelsRoute);
 app.use("/api/makeserver", makeServerRoute);
 app.use("/api/makechannel", makeChannelRoute);
 app.use("/api/fetchuser", userRoute);
+app.use("/api/invite", inviteRoute);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');

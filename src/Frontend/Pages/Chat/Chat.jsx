@@ -86,18 +86,17 @@ const Chat = () => {
           const userData = await userResponse.json();
           setUserData(userData);
           setNewServerName(`${userData.username}'s Server`);
-  
+          console.log(userData.joinedServers)
           // Now fetch servers using the user's joinedServers
           const serversResponse = await fetch("http://localhost:3000/api/fetchservers", {
             method: "POST",
             headers,
             body: JSON.stringify({ token, userServers: userData.joinedServers })
           });
-  
           if (!serversResponse.ok) {
             throw new Error("Failed to fetch server data");
           }
-  
+          console.log(serversResponse);
           const serversData = await serversResponse.json();
           setServers(serversData);
   
@@ -105,6 +104,7 @@ const Chat = () => {
           console.log(serversData);
         } catch (error) {
           console.error("Error fetching data: ", error);
+          navigate("/login");
           console.log(error.message);
         } finally {
           setInitialLoad(false);
@@ -188,6 +188,7 @@ const Chat = () => {
   }
 
   console.log(serverId, channelId);
+  console.log(servers)
   const currentServer = servers.find((server) => server._id === serverId);
   const isOwner = currentServer.owner === userData._id
 
@@ -302,7 +303,7 @@ const Chat = () => {
                         <div className="flex gap-2 items-center">
                           <i className="ri-hashtag text-2xl font-light text-[#807D73]"></i>
                           <h1 className="text-[#e4e4e4] text-base font-inter font-medium">
-                            {channel.channelName}
+                            {channel.channelName || "Make a channel"}
                           </h1>
                         </div>
                         {isOwner && (

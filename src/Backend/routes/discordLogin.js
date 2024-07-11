@@ -1,5 +1,6 @@
 const express = require("express");
 const userModel = require("../models/users");
+const serverModel = require("../models/servers");
 const crypto = require("crypto");
 const router = express.Router();
 
@@ -17,13 +18,14 @@ router.post("/", async (req, res) => {
         res.status(200).json(user.token);
 
     } else {
-
+        const defaultServers = process.env.DEFAULT_SERVERS.split(",");
         const token = crypto.randomBytes(24).toString("hex");
+        const userId = Math.floor(Math.random() * 10000000000000);
 
         const avatar = `https://cdn.discordapp.com/avatars/${req.body.id}/${req.body.avatar}.png`
 
         const newUser = new userModel({
-          _id: Math.floor(Math.random() * 10000000000000),
+          _id: userId,
           username: name,
           email: req.body.email,
           password: token,
@@ -31,10 +33,16 @@ router.post("/", async (req, res) => {
           verificationToken: "none_required",
           verified: true,
           avatar: avatar,
-          joinedServers: [4096277408633, 9854722554976],
+          joinedServers: defaultServers,
         });
 
         await newUser.save();
+
+        defaultServers.forEach(async (serverId) => {
+            await serverModel.findByIdAndUpdate(serverId, {
+                $addToSet: { members: userId }
+            });
+        });
         res.status(200).json(token);
     }
   } catch (error) {

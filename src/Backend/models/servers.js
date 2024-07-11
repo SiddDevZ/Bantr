@@ -11,7 +11,8 @@ const serverSchema = new mongoose.Schema({
     owner: { type: String, required: true },
     serverName: { type: String, required: true },
     color: { type: String, required: true },
-    channels: { type: [channelSchema], required: true }
+    channels: { type: [channelSchema], required: true },
+    members: { type: [String], default: [], required: true }
 });
 
 const serverModel = mongoose.model("servers", serverSchema);

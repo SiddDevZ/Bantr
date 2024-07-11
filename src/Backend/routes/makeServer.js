@@ -1,5 +1,6 @@
 const express = require("express");
 const serverModel = require("../models/servers");
+const userModel = require('../models/users')
 const rateLimit = require("express-rate-limit");
 
 const router = express.Router();
@@ -13,12 +14,14 @@ const Limiter = rateLimit({
 router.post("/", Limiter, async (req, res) => {
 
     const owner = req.body.owner
+    const serverId = Math.floor(Math.random() * 10000000000000);
 
     const newServer = new serverModel({
-        _id: Math.floor(Math.random() * 10000000000000),
+        _id: serverId,
         serverName: req.body.name,
         color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
         owner: owner,
+        members: [],
         channels: [
           {
             channelId: Math.floor(Math.random() * 10000000000000),
@@ -40,6 +43,9 @@ router.post("/", Limiter, async (req, res) => {
     
       try {
         const savedServer = await newServer.save();
+        await userModel.findByIdAndUpdate(owner, {
+          $addToSet: { joinedServers: serverId }
+        });
         res.status(200).json({ serverId: newServer._id })
         // console.log('Server Created: ', savedServer);
       } catch (err) {

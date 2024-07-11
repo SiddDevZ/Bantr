@@ -1,5 +1,6 @@
 const express = require("express");
 const userModel = require("../models/users");
+const serverModel = require("../models/servers");
 const crypto = require("crypto");
 const rateLimit = require("express-rate-limit");
 const { sendMail } = require("./utils");
@@ -21,20 +22,28 @@ router.post("/", registerLimiter, async (req, res) => {
         }
         else{
             const verificationToken = crypto.randomBytes(12).toString("hex");
+            const userId = Math.floor(Math.random() * 10000000000000);
             const token = crypto.randomBytes(24).toString("hex");
+            const defaultServers = process.env.DEFAULT_SERVERS.split(",");
 
             const newUser = new userModel({
-                _id: Math.floor(Math.random() * 10000000000000),
+                _id: userId,
                 username: req.body.username,
                 email: req.body.email,
                 password: req.body.password,
                 token: token,
                 verificationToken: verificationToken,
                 verified: false,
-                joinedServers: [4096277408633, 9854722554976],
+                joinedServers: defaultServers,
             });
 
             newUser.save()
+
+            defaultServers.forEach(async (serverId) => {
+                await serverModel.findByIdAndUpdate(serverId, {
+                    $addToSet: { members: userId }
+                });
+            });
 
             res.status(200).json(token);
 
