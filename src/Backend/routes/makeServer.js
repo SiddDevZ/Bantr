@@ -19,7 +19,7 @@ router.post("/", Limiter, async (req, res) => {
     const newServer = new serverModel({
         _id: serverId,
         serverName: req.body.name,
-        color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
+        color: `#${Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')}`,
         owner: owner,
         members: [],
         channels: [

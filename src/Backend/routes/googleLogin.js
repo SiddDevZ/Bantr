@@ -32,6 +32,7 @@ router.post("/", loginLimiter, async (req, res) => {
                 token: token,
                 verificationToken: "none_required",
                 verified: true,
+                color: `#${Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')}`,
                 avatar: req.body.picture,
                 joinedServers: defaultServers,
             });

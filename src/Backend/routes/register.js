@@ -34,6 +34,7 @@ router.post("/", registerLimiter, async (req, res) => {
                 token: token,
                 verificationToken: verificationToken,
                 verified: false,
+                color: `#${Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')}`,
                 joinedServers: defaultServers,
             });
 

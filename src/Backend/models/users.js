@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
     verified: { type: Boolean, default: false },
     verificationToken: { type: String, required: true },
     avatar: { type: String, required: false },
+    color: { type: String, required: true },
     joinedServers: { type: [String], default: [], required: true }
 });
 

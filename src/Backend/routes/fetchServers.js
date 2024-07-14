@@ -12,10 +12,10 @@ const Limiter = rateLimit({
 
 router.post("/", Limiter, async (req, res) => {
     const userServers = req.body.userServers;
-    console.log("User Servers:", userServers);  
+    // console.log("User Servers:", userServers);  
     try {
         const servers = await serverModel.find({ _id: { $in: userServers } });
-        console.log("Servers:", servers);
+        // console.log("Servers:", servers);
         res.status(200).json(servers);
     } catch (err) {
         res.status(500).json({ message: "Error fetching servers", error: err });
