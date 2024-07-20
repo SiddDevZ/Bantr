@@ -3,7 +3,10 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import "./Chat.css";
 import Cookies from "js-cookie";
+import TextBar from '../../Components/TextBar/TextBar'
+import Message from '../../Components/Message/Message'
 import Selector from "../../Components/Selector/Selector";
+import io from 'socket.io-client';
 
 const EditableChannelName = ({ onSave, onCancel }) => {
   const inputRef = useRef(null);
@@ -35,7 +38,14 @@ const EditableChannelName = ({ onSave, onCancel }) => {
 };
 
 const Chat = () => {
-  const { serverId, channelId } = useParams();
+  const params = useParams();
+  const [serverId, setServerId] = useState(params.serverId);
+  const [channelId, setChannelId] = useState(params.channelId);
+  useEffect(() => {
+    setServerId(params.serverId);
+    setChannelId(params.channelId);
+  }, [params.serverId, params.channelId]);
+
   const navigate = useNavigate();
   const [servers, setServers] = useState([]);
   const [serverChannels, setServerChannels] = useState([]);
@@ -51,7 +61,13 @@ const Chat = () => {
   const [isClosing, setIsClosing] = useState(false);
   const [members, setMembers] = useState([]);
   const [ownerData, setOwnerData] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [messageUserData, setMessageUserData] = useState([]);
+  const [currentServer, setCurrentServer] = useState(null);
+  const [currentChannel, setCurrentChannel] = useState(null);
+  const [isOwner, setIsOwner] = useState(false);
   const serverNameRef = useRef(null);
+  const [socket, setSocket] = useState(null);
 
   // if (!serverId || !channelId) {
   // return <Navigate to="/chat/@me" />;
@@ -62,11 +78,59 @@ const Chat = () => {
     // "Authorization": `Bearer ${token}`
   };
 
+  const getMessages = async (currentChannel) => {
+    try {
+      const messagesResponse = await fetch(
+        "http://localhost:3000/api/getmessages",
+        {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            channelId: currentChannel.channelId
+          }),
+        }
+      );
+      if (!messagesResponse.ok) {
+        throw new Error("Failed to fetch messages");
+      }
+      const messagesData = await messagesResponse.json();
+
+      const messagesUserResponse = await fetch(
+        "http://localhost:3000/api/getmsgusers",
+        {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            messages: messagesData
+          }),
+        }
+      );
+      if (!messagesUserResponse.ok) {
+        throw new Error("Failed to fetch userData of messages");
+      }
+      const messageUserData = await messagesUserResponse.json();
+
+      setMessageUserData(messageUserData);
+      setMessages(messagesData);
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+      return [];
+    }
+  }
+
+  useEffect(() => {
+    const newSocket = io('http://localhost:3000');
+    setSocket(newSocket);
+
+    return () => newSocket.close();
+  }, []);
+
   useEffect(() => {
     const fetchData = async () => {
-      if (initialLoad || refreshServers) {
+      if (true) {
         try {
           const token = Cookies.get("token");
+
           if (!token) {
             navigate("/login");
             throw new Error("No authentication token found");
@@ -87,9 +151,10 @@ const Chat = () => {
           }
 
           const userData = await userResponse.json();
+          console.log(userData);
           setUserData(userData);
           setNewServerName(`${userData.username}'s Server`);
-          console.log(userData.joinedServers);
+          // console.log(userData.joinedServers);
           // Now fetch servers using the user's joinedServers
           const serversResponse = await fetch(
             "http://localhost:3000/api/fetchservers",
@@ -105,16 +170,49 @@ const Chat = () => {
           if (!serversResponse.ok) {
             throw new Error("Failed to fetch server data");
           }
-          console.log(serversResponse);
           const serversData = await serversResponse.json();
           setServers(serversData);
+  
+          const currServer = serversData.find((server) => server._id === serverId);
+          setCurrentServer(currServer);
+  
+          if (currServer) {
+            const currChannel = currServer.channels.find(
+              (channel) => channel.channelId === channelId
+            );
+            if (currChannel) {
+              console.log("Channel Name: ", currChannel.channelName);
+              setCurrentChannel(currChannel);
+  
+              // Fetch messages only if the channel has changed
+              if (currChannel.channelId !== currentChannel?.channelId) {
+                await getMessages(currChannel);
+              }
+            }
+          }
 
-          console.log(userData);
-          console.log(serversData);
+          if (!channelId) {
+            console.log("no channel id");
+            const firstPublicChannel = currServer.channels.find(
+              (channel) => channel.type === "public"
+            );
+            const firstServerChannel = currServer.channels.find(
+              (channel) => channel.type === "server"
+            );
+        
+            if (firstPublicChannel) {
+              navigate(`/chat/${currServer._id}/${firstPublicChannel.channelId}`);
+            } else {
+              console.log("error finding a public channel");
+              navigate(`/chat/${currServer._id}/${firstServerChannel.channelId}`);
+            }
+          }
+
+          console.log("got here");
+  
+          setIsOwner(currServer.owner === userData._id);
         } catch (error) {
           console.error("Error fetching data: ", error);
-          // navigate("/login");
-          console.log(error.message);
         } finally {
           setInitialLoad(false);
           setRefreshServers(false);
@@ -124,7 +222,24 @@ const Chat = () => {
     };
 
     fetchData();
-  }, [refreshServers]);
+  }, [refreshServers, channelId, serverId]);
+
+  useEffect(() => {
+    if (socket == null || currentChannel == null) return;
+    console.log("emitting join channel")
+    console.log(socket);
+
+    socket.emit('join channel', currentChannel.channelId);
+
+    socket.on('new message', () => {
+      console.log("new message received");
+      getMessages(currentChannel);
+    });
+
+    return () => {
+      socket.off('new message');
+    };
+  }, [socket, currentChannel]);
 
   useEffect(() => {
     if (!userData) {
@@ -181,7 +296,7 @@ const Chat = () => {
           body: JSON.stringify({ currentMembers: currentmembers })
         });
         const data = await response.json();
-        console.log(data)
+        // console.log(data)
         const [ownerData, ...membersData] = data;
         setOwnerData(ownerData);
         setMembers(membersData);
@@ -220,36 +335,13 @@ const Chat = () => {
   if (loading) {
     return (
       <div className="h-[100vh] w-[100vw] bg-[#383631] flex items-center justify-center text-white">
-        <h1 className="text-6xl font-pop font-bold opacity-50">Loading...</h1>
+        <h1 className="text-6xl font-pop font-bold opacity-50">{currentChannel ? "No Channel/Server Found" : "Loading..."}</h1>
       </div>
     );
   }
 
-  console.log(serverId, channelId);
-  console.log(servers);
-  const currentServer = servers.find((server) => server._id === serverId);
-  const isOwner = currentServer.owner === userData._id;
-
-  if (!channelId) {
-    console.log("no channel id");
-    const firstPublicChannel = currentServer.channels.find(
-      (channel) => channel.type === "public"
-    );
-    const firstServerChannel = currentServer.channels.find(
-      (channel) => channel.type === "server"
-    );
-
-    if (firstPublicChannel) {
-      navigate(`/chat/${currentServer._id}/${firstPublicChannel.channelId}`);
-    } else {
-      console.log("error finding a public channel");
-      navigate(`/chat/${currentServer._id}/${firstServerChannel.channelId}`);
-    }
-  }
-  const currentChannel = currentServer.channels.find(
-    (channel) => channel.channelId === channelId
-  );
-  const currentMembers = currentServer.members
+  // console.log(serverId, channelId);
+  // console.log(servers);
 
   const makeServer = async (name, id) => {
     const response = await fetch("http://localhost:3000/api/makeserver", {
@@ -273,6 +365,10 @@ const Chat = () => {
     }, 200); // Adjust time to match animation duration
   };
 
+  const refreshMessages = async () => {
+    await getMessages(currentChannel);
+  }
+
   const handleCreateServerSubmit = async (e) => {
     e.preventDefault();
     handleCancel();
@@ -288,6 +384,8 @@ const Chat = () => {
       setRefreshServers(!refreshServers);
     }
   };
+
+  // console.log("messages: ", messages);
 
   return (
     <>
@@ -464,13 +562,35 @@ const Chat = () => {
               </div>
             </div>
           </div>
-          <div className="flex-1 ">
+          <div className="flex-1 flex flex-col h-full">
             <div className="h-12 flex items-center bg-[#383631] border-b border-[#2c2a27]">
               <div className="flex items-center gap-2 ml-7 unselectable">
                 <i className="ri-hashtag text-3xl font-light text-[#807D73]"></i>
                 <h1 className="text-[#e4e0dd] text-xl font-inter font-semibold">
                   {currentChannel.channelName}
                 </h1>
+              </div>
+            </div>
+            <div className="flex-1 flex flex-col justify-between h-full">
+              <div className="flex-1 h-full pb-6 pt-2 w-full flex flex-col justify-end">
+                {messages.map((message, index) => {
+                  const previousMessage = index > 0 ? messages[index - 1] : null;
+                  const isFirstMessageFromUser = !previousMessage || previousMessage.userId !== message.userId;
+                  const msgusrData = messageUserData.find(user => user.userId === message.userId);
+
+                  return (
+                    <Message
+                      key={message._id}
+                      message={message}
+                      userData={userData}
+                      msgusrData={msgusrData}
+                      isFirstMessageFromUser={isFirstMessageFromUser}
+                    />
+                  );
+                })}
+              </div>
+              <div className="h-[3.75rem]">
+                <TextBar channel={currentChannel.channelName} userData={userData} channelData={currentChannel} refreshMessages={refreshMessages} />
               </div>
             </div>
           </div>
@@ -497,8 +617,8 @@ const Chat = () => {
               </h1>
             </div>
             <div className="flex flex-col">
-              <div className="h-[2.8rem] px-3 flex items-center">
-                <div className={`relative rounded-full flex items-center justify-center bg-[${ownerData.color}] h-[2.2rem] w-[2.2rem] i unselectable`}>
+              <div className="h-[2.8rem] px-3 flex items-center rounded-md hover:bg-[#4e4c44] mx-1 transition-all duration-100 cursor-pointer">
+                <div className={`relative rounded-full flex items-center justify-center bg-[${ownerData.color}] h-[2.14rem] w-[2.14rem] i unselectable`}>
                   {ownerData.avatar ? (
                     <img
                       src={`${ownerData.avatar}`}
@@ -517,10 +637,10 @@ const Chat = () => {
             </div>
             <div className="bg-gradient-to-r flex items-center justify-between from-[#FF3333]/15 to-[#46412A]/15 h-[2.15rem] rounded-lg mx-2 my-2">
               <div className="flex h-full ml-[0.60rem] items-center">
-                <div className="w-[1.74rem] h-[1.4rem] bg-gradient-to-r from-[#e43fad] to-[#3582cb] rounded-md flex items-center justify-center">
+                <div className="w-[1.74rem] h-[1.35rem] bg-gradient-to-r from-[#e43fadc1] to-[#3582cbe1] rounded-md flex items-center justify-center">
                   <img src="/user.png" alt="" className="w-[75%]" />
                 </div>
-                <h1 className="font-pop font-medium text-sm text-[#BBBAB6] text-nowrap ml-2 opacity-95">
+                <h1 className="font-pop font-medium text-sm text-[#BBBAB6] text-nowrap ml-[0.62rem] opacity-95">
                   Members
                 </h1>
               </div>
@@ -530,8 +650,8 @@ const Chat = () => {
             </div>
             <div className="flex flex-col">
               {members.map((member) => (
-                <div className="h-[2.8rem] px-3 flex items-center">
-                  <div className={`relative rounded-full flex items-center justify-center bg-[${member.color}] h-[2.2rem] w-[2.2rem] i unselectable`}>
+                <div key={member._id} className="h-[2.8rem] px-3 flex items-center rounded-md hover:bg-[#4e4c44] mx-1 transition-all duration-100 cursor-pointer mb-[0.12rem]">
+                  <div className={`relative rounded-full flex items-center justify-center bg-[${member.color}] h-[2.14rem] w-[2.14rem]  i unselectable`}>
                     {member.avatar ? (
                       <img
                         src={`${member.avatar}`}
@@ -544,7 +664,7 @@ const Chat = () => {
                     <div className="absolute bottom-0 right-0 w-[0.55rem] h-[0.55rem] bg-green-500 rounded-full"></div>
                   </div>
                   <h1 className="font-inter font-semibold text-base text-[#D8D8D8] ml-[0.8rem] whitespace-nowrap">
-                    Siddharth
+                    {member.username}
                   </h1>
                 </div>
               ))}
