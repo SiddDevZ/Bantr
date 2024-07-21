@@ -7,6 +7,7 @@ require('dotenv').config();
 
 const app = express();
 const server = http.createServer(app);
+const onlineUsers = new Set();
 const io = socketIo(server, {
   cors: {
     origin: "*",
@@ -49,10 +50,20 @@ app.use("/api/getmembers", getMembersRoute);
 app.use("/api/sendmessage", sendMessageRoute);
 app.use("/api/getmessages", getMessagesRoute);
 app.use("/api/getmsgusers", getMessageUserDetailsRoute);
-
+app.post('/api/getonlineusers', (req, res) => {
+  res.json(Array.from(onlineUsers));
+});
 
 io.on('connection', (socket) => {
   console.log('New client connected');
+  let connectedUserId;
+
+  socket.on('user connected', (userId) => {
+    console.log(`User connected: ${userId}`);
+    connectedUserId = userId;
+    onlineUsers.add(userId);
+    io.emit('user status changed', { userId, status: 'online' });
+  });
 
   socket.on('join channel', (channelId) => {
     socket.join(channelId);
@@ -61,7 +72,14 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log('Client disconnected');
+    if (connectedUserId) {
+      console.log(onlineUsers)
+      onlineUsers.delete(connectedUserId);
+      console.log(onlineUsers)
+      io.emit('user status changed', { userId: connectedUserId, status: 'offline' });
+    }
   });
+
 });
 
 // Start server

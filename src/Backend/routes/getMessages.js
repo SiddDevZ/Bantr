@@ -1,7 +1,7 @@
 const express = require("express");
 const messageModel = require("../models/chats");
 const rateLimit = require("express-rate-limit");
-const moment = require("moment");
+
 const router = express.Router();
 
 const loginLimiter = rateLimit({
@@ -13,8 +13,8 @@ const loginLimiter = rateLimit({
 router.post("/", loginLimiter, async (req, res) => {
     try {
         const page = req.body.page || 1;
-        const limit = 30; // Number of messages per page
-        const skip = (page - 1) * limit; // Calculate how many documents to skip
+        // const limit = 30;
+        // const skip = (page - 1) * limit;
         const channelId = req.body.channelId;
 
         if (!channelId) {
@@ -22,12 +22,9 @@ router.post("/", loginLimiter, async (req, res) => {
         }
 
         const messages = await messageModel.find({ channelId: channelId })
-            .sort({ timestamp: 1 }) // Sort by timestamp in descending order (latest first)
-            .skip(skip)
-            .limit(limit);
-
-        const nowMoment = moment();
-        
+            .sort({ timestamp: 1 })
+            // .skip(skip)
+            // .limit(limit);
 
         res.status(200).json(messages);
     } catch (error) {

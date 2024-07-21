@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const userModel = require('../models/users');
 
-// Endpoint to get user details by IDs
 router.post('/', async (req, res) => {
     try {
         const memberIds = req.body.currentMembers;

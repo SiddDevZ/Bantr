@@ -35,7 +35,7 @@ const Selector = ({ servers, setCreateServerPopup }) => {
 
   
   return (
-    <div className='w-full flex relative items-center overflow-x-auto py-[0.6rem] unselectable px-3 bg-[#2A2821] space-x-2'>
+    <div className='w-full min-h-[4.75rem] z-10 flex relative items-center overflow-x-auto  unselectable px-3 bg-[#2A2821] space-x-2'>
         <div 
         key="inbox" 
         onClick={() => handleInboxClick()} 

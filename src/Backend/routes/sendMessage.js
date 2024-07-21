@@ -5,7 +5,7 @@ const moment = require("moment");
 
 const router = express.Router();
 const loginLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000,
+  windowMs: 1 * 60 * 1000,
   max: 120,
   message:
     "Too many login attempts from this IP, please try again after 15 minutes",

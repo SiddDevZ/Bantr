@@ -47,6 +47,7 @@ const Chat = () => {
   }, [params.serverId, params.channelId]);
 
   const navigate = useNavigate();
+  const messagesEndRef = useRef(null);
   const [servers, setServers] = useState([]);
   const [serverChannels, setServerChannels] = useState([]);
   const [publicChannels, setPublicChannels] = useState([]);
@@ -68,6 +69,7 @@ const Chat = () => {
   const [isOwner, setIsOwner] = useState(false);
   const serverNameRef = useRef(null);
   const [socket, setSocket] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState(null);
 
   // if (!serverId || !channelId) {
   // return <Navigate to="/chat/@me" />;
@@ -77,6 +79,28 @@ const Chat = () => {
     "Content-Type": "application/json",
     // "Authorization": `Bearer ${token}`
   };
+
+  const getOnlineUsers = async () => {
+    try {
+      const onlineUsersResponse = await fetch(
+        "http://localhost:3000/api/getonlineusers",
+        {
+          method: "POST",
+          headers,
+        }
+      );
+
+      if (!onlineUsersResponse.ok) {
+        throw new Error("Failed to Get online users");
+      }
+      const onlineUserData = await onlineUsersResponse.json()
+      setOnlineUsers(onlineUserData)
+      console.log(onlineUserData)
+
+    } catch (err) {
+      console.log(`Error getting Online users: ${err}`)
+    }
+  }
 
   const getMessages = async (currentChannel) => {
     try {
@@ -109,7 +133,7 @@ const Chat = () => {
         throw new Error("Failed to fetch userData of messages");
       }
       const messageUserData = await messagesUserResponse.json();
-
+      await getOnlineUsers();
       setMessageUserData(messageUserData);
       setMessages(messagesData);
     } catch (error) {
@@ -121,9 +145,20 @@ const Chat = () => {
   useEffect(() => {
     const newSocket = io('http://localhost:3000');
     setSocket(newSocket);
+    newSocket.emit('user connected', userData._id);
+    
+    newSocket.on('user status changed', ({ userId, status }) => {
+      getOnlineUsers();
+    });
+  
+    return () => {
+      newSocket.close();
+    };
+  }, [userData]);
 
-    return () => newSocket.close();
-  }, []);
+  useEffect(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -151,11 +186,11 @@ const Chat = () => {
           }
 
           const userData = await userResponse.json();
-          console.log(userData);
+          // console.log(userData);
           setUserData(userData);
           setNewServerName(`${userData.username}'s Server`);
           // console.log(userData.joinedServers);
-          // Now fetch servers using the user's joinedServers
+
           const serversResponse = await fetch(
             "http://localhost:3000/api/fetchservers",
             {
@@ -175,11 +210,40 @@ const Chat = () => {
   
           const currServer = serversData.find((server) => server._id === serverId);
           setCurrentServer(currServer);
-  
-          if (currServer) {
-            const currChannel = currServer.channels.find(
+
+          let currChannel = null;
+
+          if (!channelId) {
+            console.log("no channel id");
+            const firstPublicChannel = currServer.channels.find(
+              (channel) => channel.type === "public"
+            );
+            const firstServerChannel = currServer.channels.find(
+              (channel) => channel.type === "server"
+            );
+
+        
+            if (firstPublicChannel) {
+              navigate(`/chat/${currServer._id}/${firstPublicChannel.channelId}`);
+              currChannel = currServer.channels.find(
+                (channel) => channel.channelId === firstPublicChannel.channelId
+              );
+              console.log(currChannel)
+            } else {
+              console.log("error finding a public channel");
+              navigate(`/chat/${currServer._id}/${firstServerChannel.channelId}`);
+              currChannel = currServer.channels.find(
+                (channel) => channel.channelId === firstServerChannel.channelId
+              );
+            }
+          } else{
+            currChannel = currServer.channels.find(
               (channel) => channel.channelId === channelId
             );
+          }
+
+          if (currServer) {
+            // console.log("currChannel: ", currChannel);
             if (currChannel) {
               console.log("Channel Name: ", currChannel.channelName);
               setCurrentChannel(currChannel);
@@ -190,25 +254,6 @@ const Chat = () => {
               }
             }
           }
-
-          if (!channelId) {
-            console.log("no channel id");
-            const firstPublicChannel = currServer.channels.find(
-              (channel) => channel.type === "public"
-            );
-            const firstServerChannel = currServer.channels.find(
-              (channel) => channel.type === "server"
-            );
-        
-            if (firstPublicChannel) {
-              navigate(`/chat/${currServer._id}/${firstPublicChannel.channelId}`);
-            } else {
-              console.log("error finding a public channel");
-              navigate(`/chat/${currServer._id}/${firstServerChannel.channelId}`);
-            }
-          }
-
-          console.log("got here");
   
           setIsOwner(currServer.owner === userData._id);
         } catch (error) {
@@ -226,8 +271,8 @@ const Chat = () => {
 
   useEffect(() => {
     if (socket == null || currentChannel == null) return;
-    console.log("emitting join channel")
-    console.log(socket);
+    // console.log("emitting join channel")
+    // console.log(socket);
 
     socket.emit('join channel', currentChannel.channelId);
 
@@ -389,15 +434,15 @@ const Chat = () => {
 
   return (
     <>
-      <main className="bg-[#383631] flex flex-col relative h-screen text-white">
+      <main className="bg-[#383631] flex flex-col h-screen text-white overflow-hidden">
         <Selector
           servers={servers}
           setCreateServerPopup={setCreateServerPopup}
         />
 
         <div className="flex flex-1">
-          <div className="w-[16.7rem] flex justify-between flex-col bg-[#31302B]">
-            <div className="overflow-y-auto">
+          <div className="w-[20rem] flex justify-between flex-col bg-[#31302B]">
+            <div className="">
               <div className="h-[5.2rem] flex border-b border-[#828282] items-center justify-center gap-9 unselectable">
                 <div>
                   <h1 className="font-inter font-bold text-xl whitespace-nowrap">
@@ -562,112 +607,115 @@ const Chat = () => {
               </div>
             </div>
           </div>
-          <div className="flex-1 flex flex-col h-full">
-            <div className="h-12 flex items-center bg-[#383631] border-b border-[#2c2a27]">
-              <div className="flex items-center gap-2 ml-7 unselectable">
-                <i className="ri-hashtag text-3xl font-light text-[#807D73]"></i>
-                <h1 className="text-[#e4e0dd] text-xl font-inter font-semibold">
-                  {currentChannel.channelName}
-                </h1>
+          <div className="flex w-full justify-between" style={{}}>
+            <div className="flex flex-col w-full">
+              <div className="h-12 flex items-center bg-[#383631] border-b border-[#2c2a27]">
+                <div className="flex items-center gap-2 ml-7 unselectable">
+                  <i className="ri-hashtag text-3xl font-light text-[#807D73]"></i>
+                  <h1 className="text-[#e4e0dd] text-xl font-inter font-semibold">
+                    {currentChannel.channelName}
+                  </h1>
+                </div>
               </div>
-            </div>
-            <div className="flex-1 flex flex-col justify-between h-full">
-              <div className="flex-1 h-full pb-6 pt-2 w-full flex flex-col justify-end">
-                {messages.map((message, index) => {
-                  const previousMessage = index > 0 ? messages[index - 1] : null;
-                  const isFirstMessageFromUser = !previousMessage || previousMessage.userId !== message.userId;
-                  const msgusrData = messageUserData.find(user => user.userId === message.userId);
+              <div className="flex flex-col">
+                <div className="pb-6 pt-2 w-full overflow-y-auto " style={{height: 'calc(100vh - 11.48rem)'}}>
+                  {messages.map((message, index) => {
+                    const previousMessage = index > 0 ? messages[index - 1] : null;
+                    const isFirstMessageFromUser = !previousMessage || previousMessage.userId !== message.userId;
+                    const msgusrData = messageUserData.find(user => user.userId === message.userId);
 
-                  return (
-                    <Message
-                      key={message._id}
-                      message={message}
-                      userData={userData}
-                      msgusrData={msgusrData}
-                      isFirstMessageFromUser={isFirstMessageFromUser}
-                    />
-                  );
-                })}
-              </div>
-              <div className="h-[3.75rem]">
-                <TextBar channel={currentChannel.channelName} userData={userData} channelData={currentChannel} refreshMessages={refreshMessages} />
-              </div>
-            </div>
-          </div>
-          <div className="w-52 bg-[#31302B] overflow-y-auto">
-            <div className="h-12 flex bg-[#31302B] items-center justify-center border-b border-[#2c2a27]">
-              <button className="bg-[#1b5e25] flex items-center px-3 gap-2 py-[0.35rem] rounded-md hover:bg-[#197326] transition-all shadow-sm">
-                <h1 className="text-base font-inter font-medium text-white">
-                  Invite People
-                </h1>
-                <i className="ri-user-add-line"></i>
-              </button>
-            </div>
-            <div className="bg-gradient-to-r flex items-center justify-between from-[#FF3333]/15 to-[#46412A]/15 h-[2.15rem] rounded-lg mx-2 my-2">
-              <div className="flex h-full ml-[0.60rem] items-center">
-                <div className="w-[1.74rem] h-[1.35rem] bg-gradient-to-r from-[#e43fadc1] to-[#3582cbe1] rounded-md flex items-center justify-center">
-                  <img src="/crown.png" alt="" className="w-[75%]" />
+                    return (
+                      <Message
+                        key={message._id}
+                        message={message}
+                        userData={userData}
+                        msgusrData={msgusrData}
+                        isFirstMessageFromUser={isFirstMessageFromUser}
+                      />
+                    );
+                  })}
+                  <div ref={messagesEndRef} />
                 </div>
-                <h1 className="font-pop font-medium text-sm text-[#BBBAB6] text-nowrap ml-[0.62rem] opacity-95">
-                  Server Owner
-                </h1>
-              </div>
-              <h1 className="mr-[0.8rem] font-pop font-medium text-sm text-[#BBBAB6] text-nowrap opacity-95">
-                1
-              </h1>
-            </div>
-            <div className="flex flex-col">
-              <div className="h-[2.8rem] px-3 flex items-center rounded-md hover:bg-[#4e4c44] mx-1 transition-all duration-100 cursor-pointer">
-                <div className={`relative rounded-full flex items-center justify-center bg-[${ownerData.color}] h-[2.14rem] w-[2.14rem] i unselectable`}>
-                  {ownerData.avatar ? (
-                    <img
-                      src={`${ownerData.avatar}`}
-                      alt=""
-                      className="rounded-full"
-                    />
-                  ) : (
-                    <img src="/log.png" alt="" className="w-[80%]" />
-                  )}
-                  <div className="absolute bottom-0 right-0 w-[0.55rem] h-[0.55rem] bg-green-500 rounded-full"></div>
+                <div className="h-[3.75rem]">
+                  <TextBar channel={currentChannel.channelName} userData={userData} channelData={currentChannel} refreshMessages={refreshMessages} />
                 </div>
-                <h1 className="font-inter font-semibold text-base text-[#D8D8D8] ml-[0.8rem] whitespace-nowrap">
-                  {ownerData.username}
-                </h1>
               </div>
             </div>
-            <div className="bg-gradient-to-r flex items-center justify-between from-[#FF3333]/15 to-[#46412A]/15 h-[2.15rem] rounded-lg mx-2 my-2">
-              <div className="flex h-full ml-[0.60rem] items-center">
-                <div className="w-[1.74rem] h-[1.35rem] bg-gradient-to-r from-[#e43fadc1] to-[#3582cbe1] rounded-md flex items-center justify-center">
-                  <img src="/user.png" alt="" className="w-[75%]" />
+            <div className="w-72 bg-[#31302B] overflow-y-auto">
+              <div className="h-12 flex bg-[#31302B] items-center justify-center border-b border-[#2c2a27]">
+                <button className="bg-[#1b5e25] flex items-center px-3 gap-2 py-[0.35rem] rounded-md hover:bg-[#197326] transition-all shadow-sm">
+                  <h1 className="text-base font-inter font-medium text-white">
+                    Invite People
+                  </h1>
+                  <i className="ri-user-add-line"></i>
+                </button>
+              </div>
+              <div className="bg-gradient-to-r flex items-center justify-between from-[#FF3333]/15 to-[#46412A]/15 h-[2.15rem] rounded-lg mx-2 my-2">
+                <div className="flex h-full ml-[0.60rem] items-center">
+                  <div className="w-[1.74rem] h-[1.35rem] bg-gradient-to-r from-[#e43fadc1] to-[#3582cbe1] rounded-md flex items-center justify-center">
+                    <img src="/crown.png" alt="" className="w-[75%]" />
+                  </div>
+                  <h1 className="font-pop font-medium text-sm text-[#BBBAB6] text-nowrap ml-[0.62rem] opacity-95">
+                    Server Owner
+                  </h1>
                 </div>
-                <h1 className="font-pop font-medium text-sm text-[#BBBAB6] text-nowrap ml-[0.62rem] opacity-95">
-                  Members
+                <h1 className="mr-[0.8rem] font-pop font-medium text-sm text-[#BBBAB6] text-nowrap opacity-95">
+                  1
                 </h1>
               </div>
-              <h1 className="mr-[0.8rem] font-pop font-medium text-sm text-[#BBBAB6] text-nowrap opacity-95">
-                {members.length}
-              </h1>
-            </div>
-            <div className="flex flex-col">
-              {members.map((member) => (
-                <div key={member._id} className="h-[2.8rem] px-3 flex items-center rounded-md hover:bg-[#4e4c44] mx-1 transition-all duration-100 cursor-pointer mb-[0.12rem]">
-                  <div className={`relative rounded-full flex items-center justify-center bg-[${member.color}] h-[2.14rem] w-[2.14rem]  i unselectable`}>
-                    {member.avatar ? (
+              <div className="flex flex-col">
+                <div className="h-[2.8rem] px-3 flex items-center rounded-md hover:bg-[#4e4c44] mx-1 transition-all duration-100 cursor-pointer">
+                  <div className={`relative rounded-full flex items-center justify-center bg-[${ownerData.color}] h-[2.14rem] w-[2.14rem] i unselectable`}>
+                    {ownerData.avatar ? (
                       <img
-                        src={`${member.avatar}`}
+                        src={`${ownerData.avatar}`}
                         alt=""
                         className="rounded-full"
                       />
                     ) : (
                       <img src="/log.png" alt="" className="w-[80%]" />
                     )}
-                    <div className="absolute bottom-0 right-0 w-[0.55rem] h-[0.55rem] bg-green-500 rounded-full"></div>
+                    <div className={`absolute bottom-0 right-0 w-[0.55rem] h-[0.55rem] ${onlineUsers.find(user => ownerData._id === user) ? "bg-[#23a55a]" : "bg-[#d63030]"} rounded-full`}></div>
                   </div>
                   <h1 className="font-inter font-semibold text-base text-[#D8D8D8] ml-[0.8rem] whitespace-nowrap">
-                    {member.username}
+                    {ownerData.username}
                   </h1>
                 </div>
-              ))}
+              </div>
+              <div className="bg-gradient-to-r flex items-center justify-between from-[#FF3333]/15 to-[#46412A]/15 h-[2.15rem] rounded-lg mx-2 my-2">
+                <div className="flex h-full ml-[0.60rem] items-center">
+                  <div className="w-[1.74rem] h-[1.35rem] bg-gradient-to-r from-[#e43fadc1] to-[#3582cbe1] rounded-md flex items-center justify-center">
+                    <img src="/user.png" alt="" className="w-[75%]" />
+                  </div>
+                  <h1 className="font-pop font-medium text-sm text-[#BBBAB6] text-nowrap ml-[0.62rem] opacity-95">
+                    Members
+                  </h1>
+                </div>
+                <h1 className="mr-[0.8rem] font-pop font-medium text-sm text-[#BBBAB6] text-nowrap opacity-95">
+                  {members.length}
+                </h1>
+              </div>
+              <div className="flex flex-col">
+                {members.map((member) => (
+                  <div key={member._id} className="h-[2.8rem] px-3 flex items-center rounded-md hover:bg-[#4e4c44] mx-1 transition-all duration-100 cursor-pointer mb-[0.12rem]">
+                    <div className={`relative rounded-full flex items-center justify-center bg-[${member.color}] h-[2.14rem] w-[2.14rem]  i unselectable`}>
+                      {member.avatar ? (
+                        <img
+                          src={`${member.avatar}`}
+                          alt=""
+                          className="rounded-full"
+                        />
+                      ) : (
+                        <img src="/log.png" alt="" className="w-[80%]" />
+                      )}
+                      <div className={`absolute bottom-0 right-0 w-[0.55rem] h-[0.55rem] ${onlineUsers.find(user => member._id === user) ? "bg-[#23a55a]" : "bg-[#d63030]"} rounded-full`}></div>
+                    </div>
+                    <h1 className="font-inter font-semibold text-base text-[#D8D8D8] ml-[0.8rem] whitespace-nowrap">
+                      {member.username}
+                    </h1>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
