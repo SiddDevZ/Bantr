@@ -20,7 +20,7 @@ const port = 3000;
 app.use(express.json());
 app.use(cors());
 
-mongoose.connect("mongodb://localhost:27017/Bantr");
+mongoose.connect("mongodb+srv://siddarthmeena2:BDQbYKkjVGwv7MKq@cluster0.aq531bc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
 
 const registerRoute = require("./routes/register");
 const loginRoute = require("./routes/login");
@@ -35,6 +35,7 @@ const getMembersRoute = require("./routes/getMembers");
 const sendMessageRoute = require("./routes/sendMessage");
 const getMessagesRoute = require("./routes/getMessages");
 const getMessageUserDetailsRoute = require("./routes/getMessageUser");
+const exitServerRoute = require("./routes/exitServer");
 
 app.set('io', io);
 app.use("/api/register", registerRoute);
@@ -50,9 +51,13 @@ app.use("/api/getmembers", getMembersRoute);
 app.use("/api/sendmessage", sendMessageRoute);
 app.use("/api/getmessages", getMessagesRoute);
 app.use("/api/getmsgusers", getMessageUserDetailsRoute);
+app.use("/api/exitserver", exitServerRoute);
 app.post('/api/getonlineusers', (req, res) => {
   res.json(Array.from(onlineUsers));
 });
+app.post("/", async (req, res) => {
+  res.json({message: "Hello world"})
+})
 
 io.on('connection', (socket) => {
   console.log('New client connected');

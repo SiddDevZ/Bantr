@@ -7,6 +7,7 @@ import TextBar from '../../Components/TextBar/TextBar'
 import Message from '../../Components/Message/Message'
 import Selector from "../../Components/Selector/Selector";
 import io from 'socket.io-client';
+import config from '../../../../config.json'
 
 const EditableChannelName = ({ onSave, onCancel }) => {
   const inputRef = useRef(null);
@@ -83,7 +84,7 @@ const Chat = () => {
   const getOnlineUsers = async () => {
     try {
       const onlineUsersResponse = await fetch(
-        "http://localhost:3000/api/getonlineusers",
+        `${config.url}/getonlineusers`,
         {
           method: "POST",
           headers,
@@ -95,17 +96,42 @@ const Chat = () => {
       }
       const onlineUserData = await onlineUsersResponse.json()
       setOnlineUsers(onlineUserData)
-      console.log(onlineUserData)
+      // console.log(onlineUserData)
 
     } catch (err) {
       console.log(`Error getting Online users: ${err}`)
     }
   }
 
+  const exitServer = async () => {
+    try {
+      const exitServerResponse = await fetch(
+        `${config.url}/exitserver`,
+        {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            _id: userData._id,
+            serverId: currentServer._id
+          }),
+        }
+      )
+      if (!exitServerResponse.ok) {
+        throw new Error("Failed to exit");
+      } else{
+        const updatedServers = servers.filter(server => server._id !== currentServer._id)
+        setServers(updatedServers)
+        navigate(`/chat/${updatedServers[updatedServers.length - 1]["_id"]}`)
+      }
+    } catch (err) {
+      console.log(`Error Exiting Server: ${err}`)
+    }
+  }
+
   const getMessages = async (currentChannel) => {
     try {
       const messagesResponse = await fetch(
-        "http://localhost:3000/api/getmessages",
+        `${config.url}/getmessages`,
         {
           method: "POST",
           headers,
@@ -120,7 +146,7 @@ const Chat = () => {
       const messagesData = await messagesResponse.json();
 
       const messagesUserResponse = await fetch(
-        "http://localhost:3000/api/getmsgusers",
+        `${config.url}/getmsgusers`,
         {
           method: "POST",
           headers,
@@ -143,7 +169,7 @@ const Chat = () => {
   }
 
   useEffect(() => {
-    const newSocket = io('http://localhost:3000');
+    const newSocket = io(config.normal);
     setSocket(newSocket);
     newSocket.emit('user connected', userData._id);
     
@@ -173,7 +199,7 @@ const Chat = () => {
 
           // Fetch user data first
           const userResponse = await fetch(
-            "http://localhost:3000/api/fetchuser",
+            `${config.url}/fetchuser`,
             {
               method: "POST",
               headers,
@@ -192,7 +218,7 @@ const Chat = () => {
           // console.log(userData.joinedServers);
 
           const serversResponse = await fetch(
-            "http://localhost:3000/api/fetchservers",
+            `${config.url}/fetchservers`,
             {
               method: "POST",
               headers,
@@ -249,7 +275,7 @@ const Chat = () => {
               setCurrentChannel(currChannel);
   
               // Fetch messages only if the channel has changed
-              if (currChannel.channelId !== currentChannel?.channelId) {
+              if (currChannel.channelId !== currentChannel?.channelId || initialLoad === true) {
                 await getMessages(currChannel);
               }
             }
@@ -327,13 +353,13 @@ const Chat = () => {
   useEffect(() => {
     if (!servers || servers.length === 0) return;
 
-    const currentServer = servers.find((server) => server._id === serverId);
+    const currentServer = servers.find((server) => server._id === params.serverId);
     const currentmembers = [currentServer.owner, ...currentServer.members];
     if (!currentServer) return;
 
     const fetchMembers = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/getmembers', {
+        const response = await fetch(`${config.url}/getmembers`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -342,7 +368,8 @@ const Chat = () => {
         });
         const data = await response.json();
         // console.log(data)
-        const [ownerData, ...membersData] = data;
+        const ownerData = data.find(item => item._id === currentServer.owner);
+        const membersData = data.filter(item => item._id !== currentServer.owner);
         setOwnerData(ownerData);
         setMembers(membersData);
       } catch (error) {
@@ -356,7 +383,7 @@ const Chat = () => {
   const createNewChannel = async (serverId, newChannelName, channelType) => {
     if (newChannelName !== "") {
       console.log(serverId, newChannelName, channelType);
-      const response = await fetch("http://localhost:3000/api/makechannel", {
+      const response = await fetch(`${config.url}/makechannel`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -389,7 +416,7 @@ const Chat = () => {
   // console.log(servers);
 
   const makeServer = async (name, id) => {
-    const response = await fetch("http://localhost:3000/api/makeserver", {
+    const response = await fetch(`${config.url}/makeserver`, {
       method: "POST",
       headers,
       body: JSON.stringify({
@@ -449,19 +476,19 @@ const Chat = () => {
                     {currentServer ? currentServer.serverName : "Server"}
                   </h1>
                   <div className="mt-1 flex text-xs space-x-3">
-                    <div className="flex items-center space-x-0.5">
+                    <div className="flex items-center space-x-1">
                       <div className="rounded-full bg-[#CCCCCC] h-2 w-2"></div>
-                      <span className="text-xs">10 Members</span>
+                      <span className="text-xs">{members.length+1} Members</span>
                     </div>
 
-                    <div className="flex items-center space-x-0.5">
+                    <div className="flex items-center space-x-1">
                       <div className="rounded-full bg-green-600 h-2 w-2"></div>
-                      <span className="text-xs">10 Online</span>
+                      <span className="text-xs">{onlineUsers.length-1} Online</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="">
+                <div className="cursor-pointer" title="Exit Server" onClick={() => exitServer()}>
                   <img src="/leave.png" alt="" />
                 </div>
               </div>
@@ -663,6 +690,7 @@ const Chat = () => {
                   1
                 </h1>
               </div>
+              {/* {console.log(ownerData)} */}
               <div className="flex flex-col">
                 <div className="h-[2.8rem] px-3 flex items-center rounded-md hover:bg-[#4e4c44] mx-1 transition-all duration-100 cursor-pointer">
                   <div className={`relative rounded-full flex items-center justify-center bg-[${ownerData.color}] h-[2.14rem] w-[2.14rem] i unselectable`}>

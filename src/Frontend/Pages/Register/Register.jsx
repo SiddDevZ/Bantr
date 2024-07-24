@@ -6,9 +6,10 @@ import { Link } from 'react-router-dom'
 import { Toaster, toast } from 'sonner';
 import Cookies from 'js-cookie';
 import { useGoogleLogin } from '@react-oauth/google';
+import config from '../../../../config.json'
 
 const CLIENT_ID = "1258869862025920572";
-const REDIRECT_URI = "http://localhost:5173/auth/discord/callback";
+const REDIRECT_URI = `${config.front}/auth/discord/callback`;
 // import axios from 'axios';
 
 const Register = () => {
@@ -41,7 +42,7 @@ const Register = () => {
       
             const data = await res.json();
             console.log(JSON.stringify(data));
-            const serverResponse = await fetch(`http://localhost:3000/api/googlelogin`, {
+            const serverResponse = await fetch(`${config.url}/googlelogin`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -77,7 +78,7 @@ const Register = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:3000/api/register`, {
+            const response = await fetch(`${config.url}/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

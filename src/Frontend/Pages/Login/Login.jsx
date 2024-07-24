@@ -6,9 +6,10 @@ import { Link } from "react-router-dom";
 import { Toaster, toast } from "sonner";
 import Cookies from "js-cookie";
 import { useGoogleLogin } from "@react-oauth/google";
+import config from '../../../../config.json'
 
 const CLIENT_ID = "1258869862025920572";
-const REDIRECT_URI = "http://localhost:5173/auth/discord/callback";
+const REDIRECT_URI = `${config.front}/auth/discord/callback`;
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -51,7 +52,7 @@ const Login = () => {
         const data = await res.json();
         console.log(JSON.stringify(data));
         const serverResponse = await fetch(
-          `http://localhost:3000/api/googlelogin`,
+          `${config.url}/googlelogin`,
           {
             method: "POST",
             headers: {
@@ -79,7 +80,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`http://localhost:3000/api/login`, {
+      const response = await fetch(`${config.url}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

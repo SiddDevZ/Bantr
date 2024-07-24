@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import config from '../../../../config.json'
 
 const DiscordCallback = () => {
   const location = useLocation();
@@ -27,7 +28,7 @@ const DiscordCallback = () => {
 
           const userData = await userResponse.json();
 
-          const backendResponse = await fetch('http://localhost:3000/api/discordlogin', {
+          const backendResponse = await fetch(`${config.url}/discordlogin`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

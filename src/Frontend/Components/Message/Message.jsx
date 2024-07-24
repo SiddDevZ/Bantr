@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import moment from "moment";
+import 'remixicon/fonts/remixicon.css'
 
 const Message = ({ message, userData, isFirstMessageFromUser, msgusrData }) => {
 
@@ -22,27 +23,10 @@ const Message = ({ message, userData, isFirstMessageFromUser, msgusrData }) => {
     }
   };
 
-  const getMessageUser = async () => {
-    try {
-      const response = await fetch(`http://localhost:3000/api/getmsguser`, {
-        method: "POST",
-        headers,
-        body: JSON.stringify({
-          channelId: message.userId
-        }),
-      })
-
-      const MessageData = await response.json();
-      setMessageData(MessageData);
-    } catch (err) {
-      console.log("Error Fetching Message: ", err)
-    }
-  }
-
   return (
     <div
       key={message._id}
-      className={`w-full flex z-30 justify-between ${
+      className={`w-full flex z-30 hover:bg-[#34322d] justify-between ${
         !isFirstMessageFromUser ? "mt-1" : "mt-4"
       }`}
     >
@@ -64,11 +48,11 @@ const Message = ({ message, userData, isFirstMessageFromUser, msgusrData }) => {
 
           <div className="ml-4">
             <div className="flex items-center">
-              <h1 className="mr-2 font-inter font-[530] text-[#e1e1e1] text-lg leading-6">
+              <h1 className="mr-2 font-inter font-[530] text-[#e1e1e1] text-lg leading-6 cursor-default hover:underline hover:cursor-pointer">
                 {msgusrData.username}
               </h1>
 
-              <p className="font-pop font-light text-sm opacity-25 leading-3">
+              <p className="font-pop font-light text-sm opacity-[0.225] leading-3 cursor-default">
                 {formatTimestamp(message.timestamp)}
               </p>
             </div>

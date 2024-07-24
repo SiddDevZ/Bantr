@@ -3,6 +3,7 @@ import "./TextBar.css";
 import { useState, useEffect, useRef } from "react";
 import "remixicon/fonts/remixicon.css";
 import EmojiPicker from "emoji-picker-react";
+import config from '../../../../config.json'
 
 const headers = {
   "Content-Type": "application/json",
@@ -19,7 +20,7 @@ const TextBar = ({ channel, userData, refreshMessages, channelData }) => {
     if (message.trim()) {
       console.log("Message sent:", message);
 
-      const response = await fetch("http://localhost:3000/api/sendmessage", {
+      const response = await fetch(`${config.url}/sendmessage`, {
         method: "POST",
         headers,
         body: JSON.stringify({

@@ -6,6 +6,7 @@ import Navbar from '../../Components/Navbar/Navbar';
 import Footer from '../../Components/Footer/Footer'
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import config from '../../../../config.json'
 
 const Landing = () => {
   const [name, setName] = useState('');
