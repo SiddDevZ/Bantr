@@ -169,7 +169,12 @@ const Chat = () => {
   }
 
   useEffect(() => {
-    const newSocket = io(config.normal);
+    const newSocket = io(config.normal, {
+      transports: ['websocket'],
+      upgrade: false,
+      forceNew: true,
+      reconnection: true,
+    });
     setSocket(newSocket);
     console.log(newSocket);
     newSocket.emit('user connected', userData._id);
@@ -177,6 +182,10 @@ const Chat = () => {
     newSocket.on('user status changed', ({ userId, status }) => {
       getOnlineUsers();
       console.log("ayo")
+    });
+
+    newSocket.on('connect_error', (error) => {
+      console.error('Connection error:', error);
     });
   
     return () => {
