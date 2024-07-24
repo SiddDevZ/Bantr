@@ -170,7 +170,6 @@ const Chat = () => {
 
   useEffect(() => {
     const newSocket = io(config.normal, {
-      transports: ['websocket'],
       upgrade: false,
       forceNew: true,
       reconnection: true,
