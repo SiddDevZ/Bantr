@@ -1,6 +1,7 @@
 {
     "rewrites": [
         { "source": "/api/:path*", "destination": "http://pnode3.danbot.host:8342/api/:path*" },
+        { "source": "/socket", "destination": "http://pnode3.danbot.host:8342" },
         { "source": "/(.*)", "destination": "/index.html" }
     ]
 }
