@@ -171,10 +171,12 @@ const Chat = () => {
   useEffect(() => {
     const newSocket = io(config.normal);
     setSocket(newSocket);
+    console.log(newSocket);
     newSocket.emit('user connected', userData._id);
     
     newSocket.on('user status changed', ({ userId, status }) => {
       getOnlineUsers();
+      console.log("ayo")
     });
   
     return () => {
