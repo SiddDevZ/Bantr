@@ -1,0 +1,16 @@
+[[redirects]]
+  from = "/api/*"
+  to = "http://pnode3.danbot.host:8342/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/socket"
+  to = "http://pnode3.danbot.host:8342"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

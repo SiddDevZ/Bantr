@@ -169,18 +169,17 @@ const Chat = () => {
   }
 
   useEffect(() => {
+    console.log(socket);
+  }, [socket])
+
+  useEffect(() => {
     const newSocket = io(config.normal);
     setSocket(newSocket);
-    console.log(newSocket);
     newSocket.emit('user connected', userData._id);
     
     newSocket.on('user status changed', ({ userId, status }) => {
       getOnlineUsers();
       console.log("ayo")
-    });
-
-    newSocket.on('connect_error', (error) => {
-      console.error('Connection error:', error);
     });
   
     return () => {
