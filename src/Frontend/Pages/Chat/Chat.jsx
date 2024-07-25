@@ -169,11 +169,7 @@ const Chat = () => {
   }
 
   useEffect(() => {
-    const newSocket = io(config.normal, {
-      upgrade: false,
-      forceNew: true,
-      reconnection: true,
-    });
+    const newSocket = io(config.normal);
     setSocket(newSocket);
     console.log(newSocket);
     newSocket.emit('user connected', userData._id);
