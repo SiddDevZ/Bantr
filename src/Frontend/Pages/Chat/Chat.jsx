@@ -103,6 +103,37 @@ const Chat = () => {
     }
   }
 
+  const refreshMembers = async () => {
+    if (!servers || servers.length === 0) return;
+
+    const currentServer = servers.find((server) => server._id === params.serverId);
+    const currentmembers = [currentServer.owner, ...currentServer.members];
+    if (!currentServer) return;
+
+    const fetchMembers = async () => {
+      try {
+        const response = await fetch(`${config.url}/getmembers`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ currentMembers: currentmembers })
+        });
+        const data = await response.json();
+        // console.log(data)
+        const ownerData = data.find(item => item._id === currentServer.owner);
+        // console.log(ownerData)
+        const membersData = data.filter(item => item._id !== currentServer.owner);
+        setOwnerData(ownerData);
+        setMembers(membersData);
+      } catch (error) {
+        console.error('Error fetching members:', error);
+      }
+    };
+
+    fetchMembers();
+  }
+
   const exitServer = async () => {
     try {
       const exitServerResponse = await fetch(
@@ -162,6 +193,7 @@ const Chat = () => {
       await getOnlineUsers();
       setMessageUserData(messageUserData);
       setMessages(messagesData);
+      // console.log(messagesData);
     } catch (error) {
       console.error("Error fetching messages:", error);
       return [];
@@ -179,7 +211,7 @@ const Chat = () => {
     
     newSocket.on('user status changed', ({ userId, status }) => {
       getOnlineUsers();
-      console.log("ayo")
+      // console.log("ayo")
     });
   
     return () => {
@@ -238,7 +270,8 @@ const Chat = () => {
           }
           const serversData = await serversResponse.json();
           setServers(serversData);
-  
+          // console.log(serversData);
+          // console.log(serverId)
           const currServer = serversData.find((server) => server._id === serverId);
           setCurrentServer(currServer);
 
@@ -256,6 +289,7 @@ const Chat = () => {
         
             if (firstPublicChannel) {
               navigate(`/chat/${currServer._id}/${firstPublicChannel.channelId}`);
+              refreshMembers();
               currChannel = currServer.channels.find(
                 (channel) => channel.channelId === firstPublicChannel.channelId
               );
@@ -263,6 +297,7 @@ const Chat = () => {
             } else {
               console.log("error finding a public channel");
               navigate(`/chat/${currServer._id}/${firstServerChannel.channelId}`);
+              refreshMembers();
               currChannel = currServer.channels.find(
                 (channel) => channel.channelId === firstServerChannel.channelId
               );
@@ -356,33 +391,7 @@ const Chat = () => {
   }, [servers, serverId]);
 
   useEffect(() => {
-    if (!servers || servers.length === 0) return;
-
-    const currentServer = servers.find((server) => server._id === params.serverId);
-    const currentmembers = [currentServer.owner, ...currentServer.members];
-    if (!currentServer) return;
-
-    const fetchMembers = async () => {
-      try {
-        const response = await fetch(`${config.url}/getmembers`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ currentMembers: currentmembers })
-        });
-        const data = await response.json();
-        // console.log(data)
-        const ownerData = data.find(item => item._id === currentServer.owner);
-        const membersData = data.filter(item => item._id !== currentServer.owner);
-        setOwnerData(ownerData);
-        setMembers(membersData);
-      } catch (error) {
-        console.error('Error fetching members:', error);
-      }
-    };
-
-    fetchMembers();
+    refreshMembers();
   }, [servers, serverId]);
 
   const createNewChannel = async (serverId, newChannelName, channelType) => {
@@ -669,7 +678,7 @@ const Chat = () => {
                   <div ref={messagesEndRef} />
                 </div>
                 <div className="h-[3.75rem]">
-                  <TextBar channel={currentChannel.channelName} userData={userData} channelData={currentChannel} refreshMessages={refreshMessages} />
+                  <TextBar channel={currentChannel.channelName} userData={userData} channelData={currentChannel} setMessages={setMessages} />
                 </div>
               </div>
             </div>

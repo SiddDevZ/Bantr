@@ -10,7 +10,7 @@ const headers = {
   // "Authorization": `Bearer ${token}`
 };
 
-const TextBar = ({ channel, userData, refreshMessages, channelData }) => {
+const TextBar = ({ channel, userData, channelData, setMessages }) => {
   const [message, setMessage] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef(null);
@@ -18,6 +18,15 @@ const TextBar = ({ channel, userData, refreshMessages, channelData }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (message.trim()) {
+      const newMessage = {
+        _id: Date.now().toString(),
+        message: message,
+        username: userData.username,
+        userId: userData._id,
+        channelId: channelData.channelId,
+        timestamp: new Date().toISOString()
+      };
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
       console.log("Message sent:", message);
 
       const response = await fetch(`${config.url}/sendmessage`, {
@@ -31,7 +40,7 @@ const TextBar = ({ channel, userData, refreshMessages, channelData }) => {
         });
 
       setMessage("");
-      await refreshMessages();
+      // await refreshMessages();
       return response;
     };
   }

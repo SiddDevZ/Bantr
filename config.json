@@ -1,5 +1,5 @@
 {
-    "url": "/api",
-    "normal": "/socket",
-    "front": ""
+    "url": "http://localhost:3000/api",
+    "normal": "http://localhost:3000",
+    "front": "http://localhost:5173"
 }
