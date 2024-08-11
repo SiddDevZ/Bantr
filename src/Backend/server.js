@@ -56,7 +56,7 @@ app.post('/api/getonlineusers', (req, res) => {
   res.json(Array.from(onlineUsers));
 });
 app.get("/", async (req, res) => {
-  res.json({message: "Hello world"})
+  res.json("Hello world")
 })
 
 io.on('connection', (socket) => {
