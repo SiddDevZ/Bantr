@@ -55,7 +55,7 @@ app.use("/api/exitserver", exitServerRoute);
 app.post('/api/getonlineusers', (req, res) => {
   res.json(Array.from(onlineUsers));
 });
-app.post("/", async (req, res) => {
+app.get("/", async (req, res) => {
   res.json({message: "Hello world"})
 })
 
