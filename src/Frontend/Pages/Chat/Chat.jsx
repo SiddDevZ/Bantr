@@ -71,6 +71,9 @@ const Chat = () => {
   const serverNameRef = useRef(null);
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState(null);
+  const [invitePopup, setInvitePopup] = useState(false);
+  const [inviteCode, setInviteCode] = useState("");
+  const [inviteCopied, setInviteCopied] = useState(false);
 
   // if (!serverId || !channelId) {
   // return <Navigate to="/chat/@me" />;
@@ -79,6 +82,21 @@ const Chat = () => {
   const headers = {
     "Content-Type": "application/json",
     // "Authorization": `Bearer ${token}`
+  };
+
+  const handleInviteClick = async () => {
+    setInviteCode(currentServer._id);
+    setInviteCopied(false);
+    setInvitePopup(!invitePopup);
+  }
+
+  const handleCopyInviteLink = () => {
+    navigator.clipboard.writeText(`${config.front}/invite/${inviteCode}`).then(() => {
+      setInviteCopied(true);
+      // console.log("Invite link copied to clipboard!");
+    }).catch(err => {
+      console.error("Failed to copy invite link: ", err);
+    });
   };
 
   const getOnlineUsers = async () => {
@@ -272,7 +290,21 @@ const Chat = () => {
           setServers(serversData);
           // console.log(serversData);
           // console.log(serverId)
-          const currServer = serversData.find((server) => server._id === serverId);
+
+          let currServer = null;
+          try{
+            currServer = serversData.find((server) => server._id === serverId);
+            if (!currServer){
+              throw new Error("NO server");
+            }
+          } catch {
+            console.log("error finding current server");
+            navigate(`/chat/${serversData[0]._id}`);
+            refreshMembers();
+            currServer = serversData[0];
+            // currChannel = currServer.channels[0];
+          }
+
           setCurrentServer(currServer);
 
           let currChannel = null;
@@ -447,6 +479,7 @@ const Chat = () => {
     setIsClosing(true);
     setTimeout(() => {
       setCreateServerPopup(false);
+      setInvitePopup(false);
       setIsClosing(false);
     }, 200); // Adjust time to match animation duration
   };
@@ -677,14 +710,14 @@ const Chat = () => {
                   })}
                   <div ref={messagesEndRef} />
                 </div>
-                <div className="h-[3.75rem]">
+                <div className="">
                   <TextBar channel={currentChannel.channelName} userData={userData} channelData={currentChannel} setMessages={setMessages} />
                 </div>
               </div>
             </div>
             <div className="w-72 bg-[#31302B] overflow-y-auto">
               <div className="h-12 flex bg-[#31302B] items-center justify-center border-b border-[#2c2a27]">
-                <button className="bg-[#1b5e25] flex items-center px-3 gap-2 py-[0.35rem] rounded-md hover:bg-[#197326] transition-all shadow-sm">
+                <button onClick={handleInviteClick} className="bg-[#1b5e25] flex items-center px-3 gap-2 py-[0.35rem] rounded-md hover:bg-[#197326] transition-all shadow-sm">
                   <h1 className="text-base font-inter font-medium text-white">
                     Invite People
                   </h1>
@@ -805,6 +838,53 @@ const Chat = () => {
                     className="px-8 py-2 bg-[#e0b038] rounded hover:bg-[#e1ac24] transition-all"
                   >
                     <h1 className="font-semibold text-black">Create</h1>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+        {invitePopup && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50">
+            <div
+              className={`bg-[#31302B] p-6 w-[30rem] rounded-lg shadow-xl ${
+                isClosing ? "fade-out" : "fade-in"
+              }`}
+            >
+              <h2 className="text-2xl text-[#f7f7f5] text-center font-bold mb-1">
+                Invite Your Friends!
+              </h2>
+              <p className="font-inter mb-6 text-center font-thin px-6 text-base text-[#979ba2]">
+                Send your friends a link to this server. and when they click on it, they will be added to this server.
+              </p>
+              <form>
+                <label
+                  className="block text-gray-300 text-xs mb-1 font-bold"
+                  htmlFor="inviteLink"
+                >
+                  INVITE LINK
+                </label>
+                <input
+                  type="text"
+                  value={`${config.front}/invite/${inviteCode}`}
+                  readOnly
+                  className="h-11 w-full flex items-center pl-4 text-xl rounded bg-[#22211e] text-white focus:outline-none focus:ring-0"
+                />
+
+                <div className="flex justify-between pt-7">
+                  <button
+                    type="button"
+                    onClick={handleCancel}
+                    className="mr-2 px-3 py-2 text-white rounded hover:underline"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleCopyInviteLink}
+                    className="px-8 py-2 bg-[#e0b038] rounded hover:bg-[#e1ac24] transition-all"
+                  >
+                    <h1 className="font-semibold text-black">{inviteCopied ? "Copied" : "Copy"}</h1>
                   </button>
                 </div>
               </form>

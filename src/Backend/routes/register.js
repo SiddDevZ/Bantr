@@ -3,7 +3,7 @@ const userModel = require("../models/users");
 const serverModel = require("../models/servers");
 const crypto = require("crypto");
 const rateLimit = require("express-rate-limit");
-const { sendMail } = require("./utils");
+// const { sendMail } = require("./utils");
 
 const router = express.Router();
 const registerLimiter = rateLimit({
@@ -50,7 +50,7 @@ router.post("/", registerLimiter, async (req, res) => {
       res.status(200).json(token);
 
       const verificationLink = `http://yourdomain.com/verify?token=${verificationToken}`;
-      await sendMail(newUser.email, verificationLink);
+      // await sendMail(newUser.email, verificationLink);
     }
   } catch (error) {
     console.error("Error:", error);

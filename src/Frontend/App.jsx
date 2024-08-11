@@ -6,6 +6,7 @@ import Login from './Pages/Login/Login';
 import Register from './Pages/Register/Register';
 import AuthCallback from './Components/Callback/Discord'
 import Chat from './Pages/Chat/Chat';
+import Invite from './Pages/Invite/Invite'
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           {/* <Route path="/chat" element={<Chat />} /> */}
           <Route path="/chat/:serverId/:channelId" element={<Chat />} />
           <Route path="/chat/:serverId" element={<Chat />} />
+          <Route path="/invite/:serverId" element={<Invite />} />
           <Route path="/chat" element={<Chat />} />
           {/* <Route path="/contact" element={<Home />} */}
         </Routes>

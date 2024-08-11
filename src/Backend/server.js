@@ -20,7 +20,7 @@ const port = 3000;
 app.use(express.json());
 app.use(cors());
 
-mongoose.connect("mongodb://localhost:27017/Bantr");
+mongoose.connect("mongodb+srv://siddarthmeena2:BDQbYKkjVGwv7MKq@cluster0.aq531bc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
 
 const registerRoute = require("./routes/register");
 const loginRoute = require("./routes/login");

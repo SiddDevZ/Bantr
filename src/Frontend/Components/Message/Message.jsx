@@ -23,6 +23,16 @@ const Message = ({ message, userData, isFirstMessageFromUser, msgusrData }) => {
     }
   };
 
+  const createClickableLinks = (text) => {
+    const urlPattern = /(https?:\/\/[^\s]+)/g;
+    return text.split(urlPattern).map((part, index) => {
+      if (urlPattern.test(part)) {
+        return <a key={index} href={part} target="_blank" rel="noopener noreferrer" className="text-[#4489f7]  hover:underline">{part}</a>;
+      }
+      return part;
+    });
+  };
+
   return (
     <div
       key={message._id}
@@ -33,7 +43,7 @@ const Message = ({ message, userData, isFirstMessageFromUser, msgusrData }) => {
       {!isFirstMessageFromUser ? (
         <div className="flex items-center pl-[4.82rem]">
           <h1 className="font-pop text-[#d1d0ce] leading-5">
-            {message.message}
+            {createClickableLinks(message.message)}
           </h1>
         </div>
       ) : (
@@ -58,7 +68,7 @@ const Message = ({ message, userData, isFirstMessageFromUser, msgusrData }) => {
             </div>
 
             <h1 className="font-pop text-[#d1d0ce] leading-6">
-              {message.message}
+              {createClickableLinks(message.message)}
             </h1>
           </div>
         </div>

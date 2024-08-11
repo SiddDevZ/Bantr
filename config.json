@@ -1,5 +1,5 @@
 {
-    "url": "http://localhost:3000/api",
-    "normal": "http://localhost:3000",
-    "front": "http://localhost:5173"
+    "url": "/api",
+    "normal": "/socket",
+    "front": "https://bantr.siddz.com"
 }

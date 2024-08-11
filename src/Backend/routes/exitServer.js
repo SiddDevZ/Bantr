@@ -25,6 +25,11 @@ router.post("/", loginLimiter, async (req, res) => {
             { $pull: { joinedServers: req.body.serverId } }
         );
 
+        await serverModel.updateOne(
+            { _id: server._id },
+            { $pull: { members: req.body._id } }
+        );
+
         return res.status(200).json({ message: "Server ID removed from user's joined servers" });
         
     } catch (err) {

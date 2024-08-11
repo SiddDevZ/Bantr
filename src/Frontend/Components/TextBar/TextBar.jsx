@@ -27,7 +27,7 @@ const TextBar = ({ channel, userData, channelData, setMessages }) => {
         timestamp: new Date().toISOString()
       };
       setMessages((prevMessages) => [...prevMessages, newMessage]);
-      console.log("Message sent:", message);
+      console.log("Message sent: ", message);
 
       const response = await fetch(`${config.url}/sendmessage`, {
         method: "POST",
@@ -77,7 +77,7 @@ const TextBar = ({ channel, userData, channelData, setMessages }) => {
   }, [showEmojiPicker]);
 
   return (
-    <div className="h-full w-full z-50 flex items-start justify-center">
+    <div className="h-[3.75rem] w-full z-50 flex items-start justify-center">
       <div className="h-[calc(100%-0.45rem)] w-[calc(100%-1.5rem)] flex items-center bg-[#282824] rounded-sm">
         <button className="w-[3.79rem]">
           <i className="ri-add-large-fill text-white text-2xl font-semibold opacity-65 hover:opacity-95 transition-all duration-200"></i>
