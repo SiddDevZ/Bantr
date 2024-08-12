@@ -26,6 +26,7 @@ const TextBar = ({ channel, userData, channelData, setMessages }) => {
         channelId: channelData.channelId,
         timestamp: new Date().toISOString()
       };
+      setMessage("");
       setMessages((prevMessages) => [...prevMessages, newMessage]);
       console.log("Message sent: ", message);
 
@@ -39,7 +40,6 @@ const TextBar = ({ channel, userData, channelData, setMessages }) => {
           message: message})
         });
 
-      setMessage("");
       // await refreshMessages();
       return response;
     };

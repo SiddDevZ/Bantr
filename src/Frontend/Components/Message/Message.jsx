@@ -48,7 +48,7 @@ const Message = ({ message, userData, isFirstMessageFromUser, msgusrData }) => {
         </div>
       ) : (
         <div className="flex items-center pl-4">
-          <div className={`relative rounded-full flex items-center justify-center bg-[${msgusrData.color}] h-[2.85rem] w-[2.85rem] i unselectable`}>
+          <div className={`relative rounded-full flex items-center justify-center h-[2.85rem] w-[2.85rem] i unselectable`} style={{backgroundColor: msgusrData.color}}>
             {msgusrData.avatar ? (
               <img src={`${msgusrData.avatar}`} alt="" className="rounded-full" />
             ) : (

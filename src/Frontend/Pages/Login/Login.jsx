@@ -97,6 +97,7 @@ const Login = () => {
           secure: true,
         });
         toast.success("Login Successful", { position: "top-right" });
+        navigate("/chat");
       } else if (response.status === 401) {
         setPasswordError(true);
         toast.error("Invalid Password", { position: "top-right" });

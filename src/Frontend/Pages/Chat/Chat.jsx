@@ -453,7 +453,9 @@ const Chat = () => {
   if (loading) {
     return (
       <div className="h-[100vh] w-[100vw] bg-[#383631] flex items-center justify-center text-white">
-        <h1 className="text-6xl font-pop font-bold opacity-50">{currentChannel ? "No Channel/Server Found" : "Loading..."}</h1>
+        <h1 className="text-6xl font-pop font-bold opacity-50">
+          Loading<span className="dots"></span>
+        </h1>
       </div>
     );
   }
@@ -654,7 +656,7 @@ const Chat = () => {
             </div>
             <div className="h-[3.75rem] bg-[#191814]">
               <div className="flex h-full items-center px-4">
-                <div className="relative rounded-full flex items-center justify-center bg-[#D80000] h-11 w-11 i unselectable">
+                <div className="relative rounded-full flex items-center justify-center h-11 w-11 i unselectable" style={{backgroundColor: userData.color}}>
                   {userData.avatar ? (
                     <img
                       src={`${userData.avatar}`}
@@ -773,7 +775,7 @@ const Chat = () => {
               <div className="flex flex-col">
                 {members.map((member) => (
                   <div key={member._id} className="h-[2.8rem] px-3 flex items-center rounded-md hover:bg-[#4e4c44] mx-1 transition-all duration-100 cursor-pointer mb-[0.12rem]">
-                    <div className={`relative rounded-full flex items-center justify-center bg-[${member.color}] h-[2.14rem] w-[2.14rem]  i unselectable`}>
+                    <div className="relative rounded-full flex items-center justify-center h-[2.14rem] w-[2.14rem]  i unselectable" style={{backgroundColor: member.color}}>
                       {member.avatar ? (
                         <img
                           src={`${member.avatar}`}
@@ -781,7 +783,7 @@ const Chat = () => {
                           className="rounded-full"
                         />
                       ) : (
-                        <img src="/log.png" alt="" className="w-[80%]" />
+                        <img src="/log.png" alt="" className="w-[75%]" />
                       )}
                       <div className={`absolute bottom-0 right-0 w-[0.55rem] h-[0.55rem] ${onlineUsers.find(user => member._id === user) ? "bg-[#23a55a]" : "bg-[#d63030]"} rounded-full`}></div>
                     </div>
