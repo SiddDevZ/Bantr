@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import moment from "moment";
 import 'remixicon/fonts/remixicon.css'
 
-const Message = ({ message, userData, isFirstMessageFromUser, msgusrData }) => {
+const Message = ({ message, userData, isFirstMessageFromUser, msgusrData, isSending }) => {
 
   const [messageData, setMessageData] = useState(null)
   const headers = {
@@ -42,7 +42,7 @@ const Message = ({ message, userData, isFirstMessageFromUser, msgusrData }) => {
     >
       {!isFirstMessageFromUser ? (
         <div className="flex items-center pl-[4.82rem]">
-          <h1 className="font-pop text-[#d1d0ce] leading-5">
+          <h1 className={`font-pop ${isSending ? "text-[#d1d0ceb9]" : "text-[#d1d0ce]"} leading-5`}>
             {createClickableLinks(message.message)}
           </h1>
         </div>
@@ -66,8 +66,8 @@ const Message = ({ message, userData, isFirstMessageFromUser, msgusrData }) => {
                 {formatTimestamp(message.timestamp)}
               </p>
             </div>
-
-            <h1 className="font-pop text-[#d1d0ce] leading-6">
+            
+            <h1 className={`font-pop ${isSending ? "text-[#d1d0ceb9]" : "text-[#d1d0ce]"} leading-6`}>
               {createClickableLinks(message.message)}
             </h1>
           </div>

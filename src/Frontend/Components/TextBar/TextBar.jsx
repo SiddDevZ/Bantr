@@ -18,8 +18,8 @@ const TextBar = ({ channel, userData, channelData, setMessages }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (message.trim()) {
-      const newMessage = {
-        _id: Date.now().toString(),
+      const tempMessage = {
+        _id: 101,
         message: message,
         username: userData.username,
         userId: userData._id,
@@ -27,7 +27,7 @@ const TextBar = ({ channel, userData, channelData, setMessages }) => {
         timestamp: new Date().toISOString()
       };
       setMessage("");
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      setMessages((prevMessages) => [...prevMessages, tempMessage]);
       console.log("Message sent: ", message);
 
       const response = await fetch(`${config.url}/sendmessage`, {
@@ -38,9 +38,18 @@ const TextBar = ({ channel, userData, channelData, setMessages }) => {
           userName: userData.username,
           channelId: channelData.channelId,
           message: message})
-        });
+      });
 
-      // await refreshMessages();
+      setMessages((prevMessages) => {
+        const filteredMessages = prevMessages.filter(msg => msg._id !== 101);
+        const newMessage = {
+          ...tempMessage,
+          _id: 102
+        };
+        return [...filteredMessages, newMessage];
+      });
+      
+      await refreshMessages();
       return response;
     };
   }

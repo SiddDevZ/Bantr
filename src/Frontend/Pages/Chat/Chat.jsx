@@ -696,16 +696,25 @@ const Chat = () => {
               <div className="flex flex-col">
                 <div className="pb-6 pt-2 w-full overflow-y-auto " style={{height: 'calc(100vh - 11.48rem)'}}>
                   {messages.map((message, index) => {
+                    const isSending = message._id == 101;
                     const previousMessage = index > 0 ? messages[index - 1] : null;
                     const isFirstMessageFromUser = !previousMessage || previousMessage.userId !== message.userId;
-                    const msgusrData = messageUserData.find(user => user.userId === message.userId);
-
+                    let msgusrData = messageUserData.find(user => user.userId === message.userId) || null;
+                    if (msgusrData === null || isSending) {
+                      msgusrData = {
+                        userId: 101,
+                        username: userData.username,
+                        avatar: userData.avatar || null,
+                        color: userData.color
+                      };
+                    }
                     return (
                       <Message
                         key={message._id}
                         message={message}
                         userData={userData}
                         msgusrData={msgusrData}
+                        isSending={isSending}
                         isFirstMessageFromUser={isFirstMessageFromUser}
                       />
                     );
