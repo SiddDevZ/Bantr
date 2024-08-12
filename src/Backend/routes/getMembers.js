@@ -1,20 +1,19 @@
-const express = require('express');
-const router = express.Router();
-const userModel = require('../models/users');
+import { Hono } from 'hono'
+import { userModel } from '../models/users.js'
 
-router.post('/', async (req, res) => {
-    try {
-        const memberIds = req.body.currentMembers;
-        const members = await userModel.find(
-            { _id: { $in: memberIds } },
-            '_id username avatar color' // Select only these fields
-        );
-        // console.log(members)
-        // console.log(memberIds)
-        res.status(200).json(members);
-    } catch (error) {
-        res.status(500).send(error.message);
-    }
-});
+const router = new Hono()
 
-module.exports = router;
+router.post('/', async (c) => {
+  try {
+    const { currentMembers } = await c.req.json()
+    const members = await userModel.find(
+      { _id: { $in: currentMembers } },
+      '_id username avatar color'
+    )
+    return c.json(members, 200)
+  } catch (error) {
+    return c.text(error.message, 500)
+  }
+})
+
+export default router

@@ -1,93 +1,89 @@
-const express = require('express');
-const mongoose = require("mongoose");
-const cors = require("cors");
-const http = require('http');
-const socketIo = require('socket.io');
-require('dotenv').config();
+import { Hono } from 'hono'
+import { cors } from 'hono/cors'
+import { Server } from 'socket.io'
+import mongoose from 'mongoose'
+import { serve } from '@hono/node-server'
+import { config } from 'dotenv'
 
-const app = express();
-const server = http.createServer(app);
-const onlineUsers = new Set();
-const io = socketIo(server, {
+config()
+
+const app = new Hono()
+const onlineUsers = new Set()
+
+app.use('*', cors())
+
+mongoose.connect("mongodb+srv://siddarthmeena2:BDQbYKkjVGwv7MKq@cluster0.aq531bc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+
+import registerRoute from './routes/register.js'
+import loginRoute from './routes/login.js'
+import googleRoute from './routes/googleLogin.js'
+import discordRoute from './routes/discordLogin.js'
+import fetchChannelsRoute from './routes/fetchServers.js'
+import makeServerRoute from './routes/makeServer.js'
+import makeChannelRoute from './routes/makeChannel.js'
+import userRoute from './routes/fetchUser.js'
+import inviteRoute from './routes/invite.js'
+import getMembersRoute from './routes/getMembers.js'
+import sendMessageRoute from './routes/sendMessage.js'
+import getMessagesRoute from './routes/getMessages.js'
+import getMessageUserDetailsRoute from './routes/getMessageUser.js'
+import exitServerRoute from './routes/exitServer.js'
+
+app.route('/api/register', registerRoute)
+app.route('/api/login', loginRoute)
+app.route('/api/googlelogin', googleRoute)
+app.route('/api/discordlogin', discordRoute)
+app.route('/api/fetchservers', fetchChannelsRoute)
+app.route('/api/makeserver', makeServerRoute)
+app.route('/api/makechannel', makeChannelRoute)
+app.route('/api/fetchuser', userRoute)
+app.route('/api/invite', inviteRoute)
+app.route('/api/getmembers', getMembersRoute)
+app.route('/api/sendmessage', sendMessageRoute)
+app.route('/api/getmessages', getMessagesRoute)
+app.route('/api/getmsgusers', getMessageUserDetailsRoute)
+app.route('/api/exitserver', exitServerRoute)
+
+app.post('/api/getonlineusers', (c) => c.json(Array.from(onlineUsers)))
+
+app.get('/', (c) => c.json({ message: "Hello world" }))
+
+const port = process.env.PORT || 4000
+const server = serve({ fetch: app.fetch, port })
+
+const io = new Server(server, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"]
   }
-});
-
-const port = process.env.PORT || 4000;
-
-app.use(express.json());
-app.use(cors());
-
-mongoose.connect("mongodb+srv://siddarthmeena2:BDQbYKkjVGwv7MKq@cluster0.aq531bc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
-
-const registerRoute = require("./routes/register");
-const loginRoute = require("./routes/login");
-const googleRoute = require("./routes/googleLogin");
-const discordRoute = require("./routes/discordLogin");
-const fetchChannelsRoute = require("./routes/fetchServers");
-const makeServerRoute = require("./routes/makeServer");
-const makeChannelRoute = require("./routes/makeChannel");
-const userRoute = require("./routes/fetchUser");
-const inviteRoute = require("./routes/invite");
-const getMembersRoute = require("./routes/getMembers");
-const sendMessageRoute = require("./routes/sendMessage");
-const getMessagesRoute = require("./routes/getMessages");
-const getMessageUserDetailsRoute = require("./routes/getMessageUser");
-const exitServerRoute = require("./routes/exitServer");
-
-app.set('io', io);
-app.use("/api/register", registerRoute);
-app.use("/api/login", loginRoute);
-app.use("/api/googlelogin", googleRoute);
-app.use("/api/discordlogin", discordRoute);
-app.use("/api/fetchservers", fetchChannelsRoute);
-app.use("/api/makeserver", makeServerRoute);
-app.use("/api/makechannel", makeChannelRoute);
-app.use("/api/fetchuser", userRoute);
-app.use("/api/invite", inviteRoute);
-app.use("/api/getmembers", getMembersRoute);
-app.use("/api/sendmessage", sendMessageRoute);
-app.use("/api/getmessages", getMessagesRoute);
-app.use("/api/getmsgusers", getMessageUserDetailsRoute);
-app.use("/api/exitserver", exitServerRoute);
-app.post('/api/getonlineusers', (req, res) => {
-  res.json(Array.from(onlineUsers));
-});
-app.get("/", async (req, res) => {
-  res.json({message: "Hello world"})
 })
 
 io.on('connection', (socket) => {
-  console.log('New client connected');
-  let connectedUserId;
+  console.log('New client connected')
+  let connectedUserId
 
   socket.on('user connected', (userId) => {
-    console.log(`User connected: ${userId}`);
-    connectedUserId = userId;
-    onlineUsers.add(userId);
-    io.emit('user status changed', { userId, status: 'online' });
-  });
+    console.log(`User connected: ${userId}`)
+    connectedUserId = userId
+    onlineUsers.add(userId)
+    io.emit('user status changed', { userId, status: 'online' })
+  })
 
   socket.on('join channel', (channelId) => {
-    socket.join(channelId);
-    console.log(`Client joined channel: ${channelId}`);
-  });
+    socket.join(channelId)
+    console.log(`Client joined channel: ${channelId}`)
+  })
 
   socket.on('disconnect', () => {
-    console.log('Client disconnected');
+    console.log('Client disconnected')
     if (connectedUserId) {
       console.log(onlineUsers)
-      onlineUsers.delete(connectedUserId);
+      onlineUsers.delete(connectedUserId)
       console.log(onlineUsers)
-      io.emit('user status changed', { userId: connectedUserId, status: 'offline' });
+      io.emit('user status changed', { userId: connectedUserId, status: 'offline' })
     }
-  });
+  })
+})
 
-});
-
-// Start server
-server.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+export { io };
+console.log(`Server running at http://localhost:${port}`)

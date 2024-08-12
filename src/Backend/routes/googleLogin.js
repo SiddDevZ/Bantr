@@ -1,56 +1,57 @@
-const express = require("express");
-const userModel = require("../models/users");
-const serverModel = require("../models/servers");
-const crypto = require("crypto");
-const rateLimit = require("express-rate-limit");
+import { Hono } from 'hono'
+import { userModel } from '../models/users.js'
+import { serverModel } from '../models/servers.js'
+import crypto from 'crypto'
+import { rateLimiter } from "hono-rate-limiter"
 
-const router = express.Router();
-const loginLimiter = rateLimit({
-    windowMs: 60 * 60 * 1000,
-    max: 120,
-    message: "Too many login attempts from this IP, please try again after 15 minutes"
-});
+const router = new Hono()
 
+const limiter = rateLimiter({
+  windowMs: 60 * 60 * 1000,
+  limit: 120,
+  standardHeaders: "draft-6",
+  keyGenerator: (c) => c.req.header('x-forwarded-for') || c.req.ip,
+})
 
-router.post("/", loginLimiter, async (req, res) => {
+router.post('/', limiter, async (c) => {
+  try {
+    const { email, given_name, picture } = await c.req.json()
+    const user = await userModel.findOne({ email })
 
-    try{
-        const user = await userModel.findOne({email: req.body.email})
-        if (user){
-            res.status(200).json(user.token);
+    if (user) {
+      return c.json(user.token, 200)
+    } else {
+      const userId = Math.floor(Math.random() * 10000000000000)
+      const token = crypto.randomBytes(24).toString("hex")
+      const defaultServers = process.env.DEFAULT_SERVERS.split(",")
 
-        } else{
-            const userId = Math.floor(Math.random() * 10000000000000);
-            const token = crypto.randomBytes(24).toString("hex");
-            const defaultServers = process.env.DEFAULT_SERVERS.split(",");
+      const newUser = new userModel({
+        _id: userId,
+        username: given_name[0].toUpperCase() + given_name.slice(1),
+        email,
+        password: token,
+        token,
+        verificationToken: "none_required",
+        verified: true,
+        color: `#${Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')}`,
+        avatar: picture,
+        joinedServers: defaultServers,
+      })
 
-            const newUser = new userModel({
-                _id: userId,
-                username: req.body.given_name[0].toUpperCase() + req.body.given_name.slice(1),
-                email: req.body.email,
-                password: token,
-                token: token,
-                verificationToken: "none_required",
-                verified: true,
-                color: `#${Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')}`,
-                avatar: req.body.picture,
-                joinedServers: defaultServers,
-            });
+      await newUser.save()
 
-            await newUser.save()
+      for (const serverId of defaultServers) {
+        await serverModel.findByIdAndUpdate(serverId, {
+          $addToSet: { members: userId }
+        })
+      }
 
-            defaultServers.forEach(async (serverId) => {
-                await serverModel.findByIdAndUpdate(serverId, {
-                    $addToSet: { members: userId }
-                });
-            });
-
-            res.status(200).json(token);
-        }
-    } catch (error) {
-        console.error('Login error:', error);
-        return res.status(500).json({ error: "Internal server error" });
+      return c.json(token, 200)
     }
-});
+  } catch (error) {
+    console.error('Login error:', error)
+    return c.json({ error: "Internal server error" }, 500)
+  }
+})
 
-module.exports = router;
+export default router

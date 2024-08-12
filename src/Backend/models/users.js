@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+import mongoose from 'mongoose'
 
 const userSchema = new mongoose.Schema({
     _id: { type: String, required: true },
@@ -13,5 +13,4 @@ const userSchema = new mongoose.Schema({
     joinedServers: { type: [String], default: [], required: true }
 });
 
-const userModel = mongoose.model("users", userSchema);
-module.exports = userModel;
+export const userModel = mongoose.model("users", userSchema);

@@ -1,36 +1,32 @@
-const express = require("express");
-const messageModel = require("../models/chats");
-const rateLimit = require("express-rate-limit");
+import { Hono } from 'hono'
+import { messageModel } from '../models/chats.js'
+import { rateLimiter } from "hono-rate-limiter"
 
-const router = express.Router();
+const router = new Hono()
 
-const loginLimiter = rateLimit({
-    windowMs: 60 * 60 * 1000,
-    max: 2200,
-    message: "Too many login attempts from this IP, please try again after 15 minutes"
-});
+const limiter = rateLimiter({
+  windowMs: 60 * 60 * 1000,
+  limit: 2200,
+  standardHeaders: "draft-6",
+  keyGenerator: (c) => c.req.header('x-forwarded-for') || c.req.ip,
+})
 
-router.post("/", loginLimiter, async (req, res) => {
-    try {
-        const page = req.body.page || 1;
-        // const limit = 30;
-        // const skip = (page - 1) * limit;
-        const channelId = req.body.channelId;
+router.post('/', limiter, async (c) => {
+  try {
+    const { page = 1, channelId } = await c.req.json()
 
-        if (!channelId) {
-            return res.status(400).json({ message: "Channel ID is required" });
-        }
-
-        const messages = await messageModel.find({ channelId: channelId })
-            .sort({ timestamp: 1 })
-            // .skip(skip)
-            // .limit(limit);
-
-        res.status(200).json(messages);
-    } catch (error) {
-        console.error("Error fetching messages:", error);
-        res.status(500).json({ message: "Internal server error" });
+    if (!channelId) {
+      return c.json({ message: "Channel ID is required" }, 400)
     }
-});
 
-module.exports = router;
+    const messages = await messageModel.find({ channelId: channelId })
+      .sort({ timestamp: 1 })
+
+    return c.json(messages, 200)
+  } catch (error) {
+    console.error("Error fetching messages:", error)
+    return c.json({ message: "Internal server error" }, 500)
+  }
+})
+
+export default router

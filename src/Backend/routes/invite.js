@@ -1,51 +1,48 @@
-const express = require("express");
-const userModel = require("../models/users");
-const serverModel = require("../models/servers");
-const rateLimit = require("express-rate-limit");
+import { Hono } from 'hono'
+import { userModel } from '../models/users.js'
+import { serverModel } from '../models/servers.js'
+import { rateLimiter } from "hono-rate-limiter"
 
-const router = express.Router();
-const Limiter = rateLimit({
-    windowMs: 60 * 60 * 1000,
-    max: 200,
-    message: "Too many login attempts from this IP, please try again after 15 minutes"
-});
+const router = new Hono()
 
-
-router.post("/", Limiter, async (req, res) => {
-    const token = req.body.token;
-    const serverId = req.body.serverId;
+const limiter = rateLimiter({
+  windowMs: 60 * 60 * 1000,
+  limit: 200,
+  standardHeaders: "draft-6",
+  keyGenerator: (c) => c.req.header('x-forwarded-for') || c.req.ip,
+})
+router.post('/', limiter, async (c) => {
+  const { token, serverId } = await c.req.json()
+  
+  try {
+    const server = await serverModel.findOne({ _id: serverId })
     
-    try {
-        const server = await serverModel.findOne({ _id: serverId });
-        
-        if (server) {
+    if (server) {
+      const user = await userModel.findOne({ token: token })
+      
+      if (!user) {
+        return c.json({ message: "User not found" }, 404)
+      }
 
-            const user = await userModel.findOne({ token: token });
-            
-            if (!user) {
-                return res.status(404).json({ message: "User not found" });
-            }
+      if (!user.joinedServers.includes(serverId)) {
+        await userModel.findByIdAndUpdate(user._id, {
+          $addToSet: { joinedServers: serverId }
+        })
 
-            if (!user.joinedServers.includes(serverId)) {
+        await serverModel.findByIdAndUpdate(serverId, {
+          $addToSet: { members: user._id }
+        })
 
-                await userModel.findByIdAndUpdate(user._id, {
-                    $addToSet: { joinedServers: serverId }
-                });
-
-                await serverModel.findByIdAndUpdate(serverId, {
-                    $addToSet: { members: user._id }
-                });
-
-                res.status(200).json({ message: "Joined server successfully", server });
-            } else {
-                res.status(200).json({ message: "User already in server", server });
-            }
-        } else {
-            res.status(404).json({ message: "Server not found" });
-        }
-    } catch (err) {
-        res.status(500).json({ message: "Error fetching Server", error: err });
+        return c.json({ message: "Joined server successfully", server }, 200)
+      } else {
+        return c.json({ message: "User already in server", server }, 200)
+      }
+    } else {
+      return c.json({ message: "Server not found" }, 404)
     }
-});
+  } catch (err) {
+    return c.json({ message: "Error fetching Server", error: err }, 500)
+  }
+})
 
-module.exports = router;
+export default router

@@ -1,41 +1,42 @@
-const express = require("express");
-const userModel = require("../models/users");
-const serverModel = require("../models/servers");
-const rateLimit = require("express-rate-limit");
+import { Hono } from 'hono'
+import { userModel } from '../models/users.js'
+import { serverModel } from '../models/servers.js'
+import { rateLimiter } from "hono-rate-limiter"
 
-const router = express.Router();
-const loginLimiter = rateLimit({
-    windowMs: 60 * 60 * 1000,
-    max: 120,
-    message: "Too many attempts from this IP, please try again after 15 minutes"
-});
+const router = new Hono()
 
+const limiter = rateLimiter({
+  windowMs: 60 * 60 * 1000,
+  limit: 120,
+  standardHeaders: "draft-6",
+  keyGenerator: (c) => c.req.header('x-forwarded-for') || c.req.ip,
+})
 
-router.post("/", loginLimiter, async (req, res) => {
-    try{
-        const user = await userModel.findOne({_id: req.body._id})
-        const server = await serverModel.findOne({_id: req.body.serverId})
+router.post('/', limiter, async (c) => {
+  try {
+    const body = await c.req.json()
+    const user = await userModel.findOne({ _id: body._id })
+    const server = await serverModel.findOne({ _id: body.serverId })
 
-        if (!user || !server) {
-            return res.status(404).json({message: "User or Server not found"})
-        }
-
-        await userModel.updateOne(
-            { _id: req.body._id },
-            { $pull: { joinedServers: req.body.serverId } }
-        );
-
-        await serverModel.updateOne(
-            { _id: server._id },
-            { $pull: { members: req.body._id } }
-        );
-
-        return res.status(200).json({ message: "Server ID removed from user's joined servers" });
-        
-    } catch (err) {
-        console.log("Failed to Exit: ", err)
-        return res.status(500).json({ message: "Internal Server Error" });
+    if (!user || !server) {
+      return c.json({ message: "User or Server not found" }, 404)
     }
-});
 
-module.exports = router;
+    await userModel.updateOne(
+      { _id: body._id },
+      { $pull: { joinedServers: body.serverId } }
+    )
+
+    await serverModel.updateOne(
+      { _id: server._id },
+      { $pull: { members: body._id } }
+    )
+
+    return c.json({ message: "Server ID removed from user's joined servers" }, 200)
+  } catch (err) {
+    console.log("Failed to Exit: ", err)
+    return c.json({ message: "Internal Server Error" }, 500)
+  }
+})
+
+export default router

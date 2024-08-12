@@ -1,5 +1,5 @@
 {
-    "url": "https://bantr.onrender.com/api",
-    "normal": "https://bantr.onrender.com",
+    "url": "http://localhost:3000/api",
+    "normal": "http://localhost:3000",
     "front": "https://bantr.siddz.com"
 }

@@ -1,25 +1,24 @@
-const express = require("express");
-const serverModel = require("../models/servers");
-const rateLimit = require("express-rate-limit");
+import { Hono } from 'hono'
+import { serverModel } from '../models/servers.js'
+import { rateLimiter } from "hono-rate-limiter"
 
-const router = express.Router();
-const Limiter = rateLimit({
-    windowMs: 60 * 60 * 1000,
-    max: 200,
-    message: "Too many login attempts from this IP, please try again after 15 minutes"
-});
+const router = new Hono()
 
+const limiter = rateLimiter({
+  windowMs: 60 * 60 * 1000,
+  limit: 120,
+  standardHeaders: "draft-6",
+  keyGenerator: (c) => c.req.header('x-forwarded-for') || c.req.ip,
+})
 
-router.post("/", Limiter, async (req, res) => {
-    const userServers = req.body.userServers;
-    // console.log("User Servers:", userServers);  
-    try {
-        const servers = await serverModel.find({ _id: { $in: userServers } });
-        // console.log("Servers:", servers);
-        res.status(200).json(servers);
-    } catch (err) {
-        res.status(500).json({ message: "Error fetching servers", error: err });
-    }
-});
+router.post('/', limiter, async (c) => {
+  const { userServers } = await c.req.json()
+  try {
+    const servers = await serverModel.find({ _id: { $in: userServers } })
+    return c.json(servers, 200)
+  } catch (err) {
+    return c.json({ message: "Error fetching servers", error: err }, 500)
+  }
+})
 
-module.exports = router;
+export default router

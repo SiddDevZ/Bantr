@@ -1,29 +1,29 @@
-const express = require("express");
-const userModel = require("../models/users");
-const rateLimit = require("express-rate-limit");
+import { Hono } from 'hono'
+import { userModel } from '../models/users.js'
+import { rateLimiter } from "hono-rate-limiter"
 
-const router = express.Router();
-const loginLimiter = rateLimit({
-    windowMs: 60 * 60 * 1000,
-    max: 120,
-    message: "Too many login attempts from this IP, please try again after 15 minutes"
-});
+const router = new Hono()
 
+const limiter = rateLimiter({
+  windowMs: 60 * 60 * 1000,
+  limit: 120,
+  standardHeaders: "draft-6",
+  keyGenerator: (c) => c.req.header('x-forwarded-for') || c.req.ip,
+})
 
-router.post("/", loginLimiter, async (req, res) => {
-    const {email, password} = req.body;
-    userModel.findOne({email: email})
-    .then(user => {
-        if(user) {
-            if(user.password === password) {
-                res.status(200).json(user.token);
-            } else{
-                res.status(401).json("Wrong password");
-            }
-        } else{
-            res.status(404).json("User not found");
-        }
-    })
-});
+router.post('/', limiter, async (c) => {
+  const { email, password } = await c.req.json()
+  const user = await userModel.findOne({ email: email })
 
-module.exports = router;
+  if (user) {
+    if (user.password === password) {
+      return c.json(user.token, 200)
+    } else {
+      return c.json("Wrong password", 401)
+    }
+  } else {
+    return c.json("User not found", 404)
+  }
+})
+
+export default router

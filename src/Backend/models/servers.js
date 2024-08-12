@@ -1,10 +1,10 @@
-const mongoose = require("mongoose")
+import mongoose from 'mongoose'
 
 const channelSchema = new mongoose.Schema({
     channelId: { type: String, required: true },
     channelName: { type: String, required: true },
     type: { type: String, enum: ['server', 'public'], required: true }
-  });
+});
 
 const serverSchema = new mongoose.Schema({
     _id: { type: String, required: true },
@@ -15,5 +15,4 @@ const serverSchema = new mongoose.Schema({
     members: { type: [String], default: [], required: true }
 });
 
-const serverModel = mongoose.model("servers", serverSchema);
-module.exports = serverModel;
+export const serverModel = mongoose.model("servers", serverSchema);

@@ -1,42 +1,44 @@
-const express = require("express");
-const userModel = require("../models/users");
-const rateLimit = require("express-rate-limit");
+import { Hono } from 'hono'
+import { userModel } from '../models/users.js'
+import { rateLimiter } from "hono-rate-limiter"
 
-const router = express.Router();
-const loginLimiter = rateLimit({
-    windowMs: 60 * 60 * 1000,
-    max: 20120,
-    message: "Too many attempts from this IP, please try again after 15 minutes"
-});
+const router = new Hono()
 
-router.post("/", loginLimiter, async (req, res) => {
-    const messageList = req.body.messages;
+const limiter = rateLimiter({
+  windowMs: 60 * 60 * 1000,
+  limit: 20120,
+  standardHeaders: "draft-6",
+  keyGenerator: (c) => c.req.header('x-forwarded-for') || c.req.ip,
+})
 
-    try {
-        const userIds = [...new Set(messageList.map(message => message.userId))];
+router.post('/', limiter, async (c) => {
+  const { messages: messageList } = await c.req.json()
 
-        const users = await userModel.find({ _id: { $in: userIds } }, 'username avatar color').exec();
+  try {
+    const userIds = [...new Set(messageList.map(message => message.userId))]
 
-        const userMap = users.reduce((map, user) => {
-            map[user._id] = user;
-            return map;
-        }, {});
+    const users = await userModel.find({ _id: { $in: userIds } }, 'username avatar color').exec()
 
-        const messagesWithUserDetails = messageList.map(message => {
-            const user = userMap[message.userId];
-            return {
-                userId: message.userId,
-                username: user.username,
-                avatar: user.avatar,
-                color: user.color
-            };
-        });
+    const userMap = users.reduce((map, user) => {
+      map[user._id] = user
+      return map
+    }, {})
 
-        res.status(200).json(messagesWithUserDetails);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "An error occurred while processing the request." });
-    }
-});
+    const messagesWithUserDetails = messageList.map(message => {
+      const user = userMap[message.userId]
+      return {
+        userId: message.userId,
+        username: user.username,
+        avatar: user.avatar,
+        color: user.color
+      }
+    })
 
-module.exports = router;
+    return c.json(messagesWithUserDetails, 200)
+  } catch (error) {
+    console.error(error)
+    return c.json({ error: "An error occurred while processing the request." }, 500)
+  }
+})
+
+export default router
