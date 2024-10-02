@@ -42,7 +42,7 @@ const Message = ({ message, userData, isFirstMessageFromUser, msgusrData, isSend
     >
       {!isFirstMessageFromUser ? (
         <div className="flex items-center pl-[4.82rem]">
-          <h1 className={`font-pop ${isSending ? "text-[#d1d0ceb9]" : "text-[#d1d0ce]"} leading-5`}>
+          <h1 className={`font-pop ${isSending ? "text-[#d1d0ce9e]" : "text-[#d1d0ce]"} leading-5`}>
             {createClickableLinks(message.message)}
           </h1>
         </div>
@@ -67,7 +67,7 @@ const Message = ({ message, userData, isFirstMessageFromUser, msgusrData, isSend
               </p>
             </div>
             
-            <h1 className={`font-pop ${isSending ? "text-[#d1d0ceb9]" : "text-[#d1d0ce]"} leading-6`}>
+            <h1 className={`font-pop ${isSending ? "text-[#d1d0ce9e]" : "text-[#d1d0ce]"} leading-6`}>
               {createClickableLinks(message.message)}
             </h1>
           </div>

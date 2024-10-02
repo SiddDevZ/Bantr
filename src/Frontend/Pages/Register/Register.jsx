@@ -164,7 +164,7 @@ const Register = () => {
                         </form>
                         <div className="w-full  mt-[1.4vh] h-0.5 bg-[#e0e0e01d]"></div>
                         <button 
-                        // onClick={() => googleLogin()} 
+                        onClick={() => googleLogin()} 
                         className='h-14 mt-[2.5vh] w-full flex items-center justify-center border border-gray-400 hover:border-white transition-all duration-100 rounded-full gap-2'><img src="google.webp" alt="" className='h-4/5' /><span className='font-semibold'>Continue with Google</span></button>
                         <button onClick={() => discordLogin()} className='h-14 mt-[2vh] w-full flex items-center justify-center border border-gray-400 hover:border-white transition-all duration-100 rounded-full gap-3'><img src="discord.webp" alt="" className='h-3/6' /><span className='font-semibold'>Continue with Discord</span></button>
                     </div>
