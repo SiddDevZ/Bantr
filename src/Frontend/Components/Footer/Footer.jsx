@@ -20,7 +20,7 @@ const Footer = ({ onContactClick }) => {
                     </div>
                     <div className='flex flex-col justify-between items-center'>
                         <button onClick={onContactClick} className='footer-glow md:text-2xl sm:text-xl xs:text-lg text-[#e8e8e8] transition-all duration-300 hover:text-white font-pop'>Contact</button>
-                        <Link to="/login" className='footer-glow md:text-2xl sm:text-xl xs:text-lg text-[#e8e8e8] transition-all duration-300 hover:text-white font-pop'>Login</Link>
+                        <Link to="/privacy-policy" className='footer-glow md:text-2xl sm:text-xl xs:text-lg text-[#e8e8e8] transition-all duration-300 hover:text-white font-pop'>Privacy Policy</Link>
                     </div>
                 </div>
             </div>
