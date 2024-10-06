@@ -7,6 +7,8 @@ import TextBar from '../../Components/TextBar/TextBar'
 import Message from '../../Components/Message/Message'
 import Selector from "../../Components/Selector/Selector";
 import io from 'socket.io-client';
+import { ToastContainer, toast, Bounce } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import config from '../../../../config.json'
 
 const EditableChannelName = ({ onSave, onCancel }) => {
@@ -74,6 +76,7 @@ const Chat = () => {
   const [invitePopup, setInvitePopup] = useState(false);
   const [inviteCode, setInviteCode] = useState("");
   const [inviteCopied, setInviteCopied] = useState(false);
+  const [messagesLoading, setMessagesLoading] = useState(false);
 
   // if (!serverId || !channelId) {
   // return <Navigate to="/chat/@me" />;
@@ -185,7 +188,7 @@ const Chat = () => {
           method: "POST",
           headers,
           body: JSON.stringify({
-            channelId: currentChannel.channelId
+            channelId: currentChannel
           }),
         }
       );
@@ -252,6 +255,8 @@ const Chat = () => {
             throw new Error("No authentication token found");
           }
 
+          setMessagesLoading(true);
+
           // Fetch user data first
           const userResponse = await fetch(
             `${config.url}/fetchuser`,
@@ -267,7 +272,6 @@ const Chat = () => {
           }
 
           const userData = await userResponse.json();
-          // console.log(userData);
           setUserData(userData);
           setNewServerName(`${userData.username}'s Server`);
           // console.log(userData.joinedServers);
@@ -348,7 +352,8 @@ const Chat = () => {
   
               // Fetch messages only if the channel has changed
               if (currChannel.channelId !== currentChannel?.channelId || initialLoad === true) {
-                await getMessages(currChannel);
+                await getMessages(currChannel.channelId);
+                setMessagesLoading(false);
               }
             }
           }
@@ -365,7 +370,7 @@ const Chat = () => {
     };
 
     fetchData();
-  }, [refreshServers, channelId, serverId]);
+  }, [refreshServers, serverId]);
 
   useEffect(() => {
     if (socket == null || currentChannel == null) return;
@@ -376,7 +381,7 @@ const Chat = () => {
 
     socket.on('new message', () => {
       console.log("new message received");
-      getMessages(currentChannel);
+      getMessages(currentChannel.channelId);
     });
 
     return () => {
@@ -445,9 +450,27 @@ const Chat = () => {
     }
   };
 
-  const handleChannelClick = (channelId) => {
-    // console.log(channelId)
+  const handleChannelClick = async (channelId) => {
     navigate(`/chat/${serverId}/${channelId}`);
+    
+    // Find the current server
+    const currentServer = servers.find(server => server._id === serverId);
+    
+    if (currentServer) {
+      // Find the channel within the current server
+      const newCurrentChannel = currentServer.channels.find(channel => channel.channelId === channelId);
+      
+      if (newCurrentChannel) {
+        setCurrentChannel(newCurrentChannel);
+      } else {
+        console.error("Channel not found in the current server");
+      }
+    } else {
+      console.error("Current server not found");
+    }
+    setMessagesLoading(true);
+    await getMessages(channelId);
+    setMessagesLoading(false);
   };
 
   if (loading) {
@@ -552,6 +575,7 @@ const Chat = () => {
                       </h3>
                     </div>
 
+                  {isOwner && (
                     <div
                       className="child cursor-pointer"
                       title="Create Channel"
@@ -559,6 +583,7 @@ const Chat = () => {
                     >
                       <i className="ri-add-line text-[#C1C1C1] text-lg"></i>
                     </div>
+                  )}
                   </div>
                   <div className="flex flex-col ml-3 mr-2 mt-1 gap-1">
                     {serverChannels.map((channel) => (
@@ -606,13 +631,15 @@ const Chat = () => {
                         PUBLIC
                       </h3>
                     </div>
-                    <div
-                      className="child cursor-pointer"
-                      title="Create Channel"
-                      onClick={() => setCreatingPublicChannel(true)}
-                    >
-                      <i className="ri-add-line text-[#C1C1C1] text-lg"></i>
-                    </div>
+                    {isOwner && (
+                      <div
+                        className="child cursor-pointer"
+                        title="Create Channel"
+                        onClick={() => setCreatingPublicChannel(true)}
+                      >
+                        <i className="ri-add-line text-[#C1C1C1] text-lg"></i>
+                      </div>
+                    )}
                   </div>
                   <div className="flex flex-col ml-3 mr-2 mt-1 gap-1">
                     {publicChannels.map((channel) => (
@@ -695,30 +722,38 @@ const Chat = () => {
               </div>
               <div className="flex flex-col">
                 <div className="pb-6 pt-2 w-full overflow-y-auto " style={{height: 'calc(100vh - 11.48rem)'}}>
-                  {messages.map((message, index) => {
-                    const isSending = message._id == 101;
-                    const previousMessage = index > 0 ? messages[index - 1] : null;
-                    const isFirstMessageFromUser = !previousMessage || previousMessage.userId !== message.userId;
-                    let msgusrData = messageUserData.find(user => user.userId === message.userId) || null;
-                    if (msgusrData === null || isSending) {
-                      msgusrData = {
-                        userId: 101,
-                        username: userData.username,
-                        avatar: userData.avatar || null,
-                        color: userData.color
-                      };
-                    }
-                    return (
-                      <Message
-                        key={message._id}
-                        message={message}
-                        userData={userData}
-                        msgusrData={msgusrData}
-                        isSending={isSending}
-                        isFirstMessageFromUser={isFirstMessageFromUser}
-                      />
-                    );
-                  })}
+                  {messagesLoading ? (
+                    <div className="h-full w-full flex items-center justify-center text-white">
+                      <h1 className="text-4xl font-pop font-bold opacity-50">
+                        Loading<span className="dots"></span>
+                      </h1>
+                    </div>
+                  ) : (
+                    messages.map((message, index) => {
+                      const isSending = message._id == 101;
+                      const previousMessage = index > 0 ? messages[index - 1] : null;
+                      const isFirstMessageFromUser = !previousMessage || previousMessage.userId !== message.userId;
+                      let msgusrData = messageUserData.find(user => user.userId === message.userId) || null;
+                      if (msgusrData === null || isSending) {
+                        msgusrData = {
+                          userId: 101,
+                          username: userData.username,
+                          avatar: userData.avatar || null,
+                          color: userData.color
+                        };
+                      }
+                      return (
+                        <Message
+                          key={message._id}
+                          message={message}
+                          userData={userData}
+                          msgusrData={msgusrData}
+                          isSending={isSending}
+                          isFirstMessageFromUser={isFirstMessageFromUser}
+                        />
+                      );
+                    })
+                  )}
                   <div ref={messagesEndRef} />
                 </div>
                 <div className="">
@@ -902,6 +937,7 @@ const Chat = () => {
             </div>
           </div>
         )}
+        <ToastContainer />
       </main>
     </>
   );

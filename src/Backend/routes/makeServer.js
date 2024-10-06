@@ -25,17 +25,22 @@ router.post('/', limiter, async (c) => {
     channels: [
       {
         channelId: Math.floor(Math.random() * 10000000000000),
-        channelName: 'Holy shit it worked omfg',
-        type: 'server'
-      },
-      {
-        channelId: Math.floor(Math.random() * 10000000000000),
         channelName: 'Announcements',
         type: 'server'
       },
       {
         channelId: Math.floor(Math.random() * 10000000000000),
+        channelName: 'Rules',
+        type: 'server'
+      },
+      {
+        channelId: Math.floor(Math.random() * 10000000000000),
         channelName: 'Public Chat',
+        type: 'public'
+      },
+      {
+        channelId: Math.floor(Math.random() * 10000000000000),
+        channelName: 'Memes',
         type: 'public'
       }
     ]
