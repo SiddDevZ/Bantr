@@ -77,6 +77,7 @@ const Chat = () => {
   const [inviteCode, setInviteCode] = useState("");
   const [inviteCopied, setInviteCopied] = useState(false);
   const [messagesLoading, setMessagesLoading] = useState(false);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   // if (!serverId || !channelId) {
   // return <Navigate to="/chat/@me" />;
@@ -86,6 +87,17 @@ const Chat = () => {
     "Content-Type": "application/json",
     // "Authorization": `Bearer ${token}`
   };
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsSmallScreen(window.innerWidth < 768);
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
 
   const handleInviteClick = async () => {
     setInviteCode(currentServer._id);
@@ -472,6 +484,17 @@ const Chat = () => {
     await getMessages(channelId);
     setMessagesLoading(false);
   };
+
+  if (isSmallScreen) {
+    return (
+      <div className="h-screen w-screen flex items-center justify-center bg-[#383631] text-white">
+        <div className="text-center p-4">
+          <h1 className="text-2xl font-bold mb-4">Sorry, we're not available on small screens as of now.</h1>
+          <p>Please use a device with a larger screen to access this content.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
