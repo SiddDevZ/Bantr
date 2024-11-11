@@ -90,7 +90,8 @@ const Register = () => {
                 const result = await response.json();
                 // console.log("Success: ", result);
                 Cookies.set('token', result, { expires: 365 * 20, sameSite: 'None', secure: true });
-                toast.success('Success! Please check your email to Verify your Account!', {position: 'top-right'});
+                toast.success('Success!', {position: 'top-right'});
+                navigate("/chat");
             } else if (response.status === 400) {
                 const result = await response.json();
                 console.error("Error: ", result);
