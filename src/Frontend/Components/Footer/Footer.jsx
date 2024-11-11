@@ -26,7 +26,7 @@ const Footer = ({ onContactClick }) => {
             </div>
         </div>
         <div className='mt-6 flex xss:justify-center sm:justify-start'>
-            <h1 className='text-xl font-pop'>Made by <a target="_blank" href="https://github.com/SiddDevZ" className='font-mono footer-underline'>Siddharth Jorwal</a> ❤️</h1>
+            <h1 className='text-xl font-pop'>Made by <a target="_blank" href="https://github.com/SiddDevZ" className='font-mono footer-underline'>Siddharth Meena</a> ❤️</h1>
         </div>
     </footer>
   )
