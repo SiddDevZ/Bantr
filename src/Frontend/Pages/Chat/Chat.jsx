@@ -78,6 +78,7 @@ const Chat = () => {
   const [inviteCopied, setInviteCopied] = useState(false);
   const [messagesLoading, setMessagesLoading] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [noServers, setNoServers] = useState(false);
 
   // if (!serverId || !channelId) {
   // return <Navigate to="/chat/@me" />;
@@ -184,6 +185,10 @@ const Chat = () => {
         throw new Error("Failed to exit");
       } else{
         const updatedServers = servers.filter(server => server._id !== currentServer._id)
+        if (updatedServers.length === 0) {
+          setNoServers(true)
+          throw new Error("Failed to get any servers");
+        }
         setServers(updatedServers)
         navigate(`/chat/${updatedServers[updatedServers.length - 1]["_id"]}`)
       }
@@ -287,6 +292,11 @@ const Chat = () => {
           setUserData(userData);
           setNewServerName(`${userData.username}'s Server`);
           // console.log(userData.joinedServers);
+          if (!userData.joinedServers || userData.joinedServers.length === 0) {
+            setNoServers(true);
+            setLoading(false);
+            throw new Error("no servers");
+          }
 
           const serversResponse = await fetch(
             `${config.url}/fetchservers`,
@@ -504,6 +514,18 @@ const Chat = () => {
         </h1>
       </div>
     );
+  }
+
+  if (noServers){
+    return (
+      <main className="bg-[#383631] flex flex-col h-screen text-white overflow-hidden">
+        <div className="h-full w-full flex flex-col justify-center items-center">
+          <h1 className="text-6xl font-pop font-bold opacity-50">No Servers Found</h1>
+          <a className="text-blue-400 hover:text-blue-300 underline font-semibold transition-colors duration-200" href="https://bantr.siddz.com/invite/2637047190155">Join Bantr Support</a>
+          <a className="text-blue-400 hover:text-blue-300 underline font-semibold transition-colors duration-200" href="https://bantr.siddz.com/invite/6224722972276">Join Memes Server</a>
+        </div>
+      </main>
+    )
   }
 
   // console.log(serverId, channelId);
@@ -784,7 +806,7 @@ const Chat = () => {
                 </div>
               </div>
             </div>
-            <div className="w-72 bg-[#31302B] overflow-y-auto">
+            <div className="w-72 bg-[#31302B]">
               <div className="h-12 flex bg-[#31302B] items-center justify-center border-b border-[#2c2a27]">
                 <button onClick={handleInviteClick} className="bg-[#1b5e25] flex items-center px-3 gap-2 py-[0.35rem] rounded-md hover:bg-[#197326] transition-all shadow-sm">
                   <h1 className="text-base font-inter font-medium text-white">
@@ -839,9 +861,9 @@ const Chat = () => {
                   {members.length}
                 </h1>
               </div>
-              <div className="flex flex-col">
+              <div className="flex flex-col overflow-y-auto" style={{ maxHeight: 'calc(100vh - 12rem - 4.3rem - 1.15rem )' }}>
                 {members.map((member) => (
-                  <div key={member._id} className="h-[2.8rem] px-3 flex items-center rounded-md hover:bg-[#4e4c44] mx-1 transition-all duration-100 cursor-pointer mb-[0.12rem]">
+                  <div key={member._id} className="h-[2.8rem] px-3 flex items-center rounded-md hover:bg-[#4e4c44] mx-1 transition-all duration-100 cursor-pointer py-[1.15rem]">
                     <div className="relative rounded-full flex items-center justify-center h-[2.14rem] w-[2.14rem]  i unselectable" style={{backgroundColor: member.color}}>
                       {member.avatar ? (
                         <img
