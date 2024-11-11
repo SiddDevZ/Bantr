@@ -183,10 +183,10 @@ const Landing = () => {
                     <a className='flex glow md:w-[50px] md:h-[50px] sm:w-[45px] sm:h-[45px] xss:w-[45px] xss:h-[45px] bg-[#EBEBEB] hover:bg-white mr-5 rounded-full justify-center items-center blur-thing' target="_blank" href='https://github.com/SiddDevZ'>
                       <i className="ri-github-fill    text-black md:text-[40px] xss:text-[35px]"></i>
                     </a>
-                    <a className='flex glow md:w-[50px] md:h-[50px] sm:w-[45px] sm:h-[45px] xss:w-[45px] xss:h-[45px] bg-[#EBEBEB] hover:bg-white mr-5 rounded-full justify-center items-center' target="_blank" href=''>
+                    <a className='flex glow opacity-50 cursor-default md:w-[50px] md:h-[50px] sm:w-[45px] sm:h-[45px] xss:w-[45px] xss:h-[45px] bg-[#EBEBEB] mr-5 rounded-full justify-center items-center' target="_blank" href=''>
                       <i className="ri-twitter-x-line text-black md:text-[32px] xss:text-[30px]"></i>
                     </a>
-                    <a className='flex glow md:w-[50px] md:h-[50px] sm:w-[45px] sm:h-[45px] xss:w-[45px] xss:h-[45px] bg-[#EBEBEB] hover:bg-white mr-5 rounded-full justify-center items-center' target="_blank" href=''>
+                    <a className='flex glow opacity-50 cursor-default md:w-[50px] md:h-[50px] sm:w-[45px] sm:h-[45px] xss:w-[45px] xss:h-[45px] bg-[#EBEBEB] mr-5 rounded-full justify-center items-center' target="_blank" href=''>
                       <i className="ri-instagram-line text-black md:text-[38px] xss:text-[32px]"></i>
                     </a>
                   </div>
