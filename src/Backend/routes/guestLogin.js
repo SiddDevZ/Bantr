@@ -20,6 +20,7 @@ router.post('/', guestLoginLimiter, async (c) => {
     const userId = Math.floor(Math.random() * 10000000000000)
     const token = crypto.randomBytes(24).toString("hex")
     const defaultServers = process.env.DEFAULT_SERVERS.split(",")
+    const verificationToken = crypto.randomBytes(12).toString("hex")
 
     const guestUser = new userModel({
       _id: userId,
@@ -27,7 +28,7 @@ router.post('/', guestLoginLimiter, async (c) => {
       email: `guest_${userId}@placeholder.com`,
       password: crypto.randomBytes(16).toString("hex"),
       token: token,
-      verificationToken: null,
+      verificationToken: verificationToken,
       verified: true,
       color: `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0")}`,
       joinedServers: defaultServers,

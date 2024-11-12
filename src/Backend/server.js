@@ -28,7 +28,7 @@ import sendMessageRoute from './routes/sendMessage.js'
 import getMessagesRoute from './routes/getMessages.js'
 import getMessageUserDetailsRoute from './routes/getMessageUser.js'
 import exitServerRoute from './routes/exitServer.js'
-import guestLogin from './routes/guestLogin.js'
+import guestLoginRoute from './routes/guestLogin.js'
 
 app.route('/api/register', registerRoute)
 app.route('/api/login', loginRoute)
@@ -44,7 +44,7 @@ app.route('/api/sendmessage', sendMessageRoute)
 app.route('/api/getmessages', getMessagesRoute)
 app.route('/api/getmsgusers', getMessageUserDetailsRoute)
 app.route('/api/exitserver', exitServerRoute)
-app.route('/api/guestlogin', guestLogin)
+app.route('/api/guestlogin', guestLoginRoute)
 
 app.post('/api/getonlineusers', (c) => c.json(Array.from(onlineUsers)))
 
