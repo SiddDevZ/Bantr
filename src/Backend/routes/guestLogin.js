@@ -15,7 +15,7 @@ const guestLoginLimiter = rateLimiter({
 
 router.post('/', guestLoginLimiter, async (c) => {
   try {
-    const { name } = await c.req.json()
+    const { username } = await c.req.json()
 
     const userId = Math.floor(Math.random() * 10000000000000)
     const token = crypto.randomBytes(24).toString("hex")
@@ -24,7 +24,7 @@ router.post('/', guestLoginLimiter, async (c) => {
 
     const guestUser = new userModel({
       _id: userId,
-      username: `${name}`,
+      username: username,
       email: `guest_${userId}@placeholder.com`,
       password: crypto.randomBytes(16).toString("hex"),
       token: token,
