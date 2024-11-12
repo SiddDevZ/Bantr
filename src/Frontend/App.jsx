@@ -8,6 +8,7 @@ import AuthCallback from './Components/Callback/Discord'
 import Chat from './Pages/Chat/Chat';
 import Invite from './Pages/Invite/Invite'
 import Privacy from './Pages/Privacy/Privacy'
+import GuestLogin from './Pages/GuestLogin/GuestLogin'
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/invite/:serverId" element={<Invite />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/privacy-policy" element={<Privacy />} />
+          <Route path="/guest" element={<GuestLogin />} />
           {/* <Route path="/contact" element={<Home />} */}
         </Routes>
       </Router>
