@@ -12,7 +12,8 @@ const onlineUsers = new Set()
 
 app.use('*', cors())
 
-mongoose.connect("mongodb+srv://siddarthmeena2:BDQbYKkjVGwv7MKq@cluster0.aq531bc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+const dbUrl = process.env.DATABASE_URL
+mongoose.connect(dbUrl);
 
 import registerRoute from './routes/register.js'
 import loginRoute from './routes/login.js'

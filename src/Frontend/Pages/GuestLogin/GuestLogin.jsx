@@ -102,14 +102,6 @@ const GuestLogin = () => {
     }
   };
 
-  const handleUsernameChange = (e) => {
-    let value = e.target.value.replace(/\s/g, "");
-    if (value.length > 14) {
-      value = value.substring(0, 16);
-    }
-    setUsername(value);
-  };
-
   return (
     <>
       <main className="h-screen w-[100vw] bg-[#1f1f1f] flex overflow-scroll">
@@ -149,7 +141,6 @@ const GuestLogin = () => {
                   type="text"
                   id="username"
                   value={username}
-                  onChange={handleUsernameChange}
                   placeholder="yourname"
                   className="h-14 w-full flex items-center pl-6 text-xl rounded-full form-border bg-[#1f1f1f] text-white focus:outline-none focus:ring-0 focus:border-slate-100"
                 />
