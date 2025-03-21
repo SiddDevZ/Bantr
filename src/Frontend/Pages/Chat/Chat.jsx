@@ -325,9 +325,9 @@ const Chat = () => {
             }
           } catch {
             console.log("error finding current server");
-            navigate(`/chat/${serversData[0]._id}`);
+            navigate(`/chat/${serversData[1]._id}`);
             refreshMembers();
-            currServer = serversData[0];
+            currServer = serversData[1];
             // currChannel = currServer.channels[0];
           }
 

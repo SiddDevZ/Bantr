@@ -16,6 +16,7 @@ const dbUrl = process.env.DATABASE_URL
 mongoose.connect(dbUrl);
 
 import registerRoute from './routes/register.js'
+import createCheckoutSession from './routes/create-checkout-session.js'
 import loginRoute from './routes/login.js'
 import googleRoute from './routes/googleLogin.js'
 import discordRoute from './routes/discordLogin.js'
@@ -46,6 +47,7 @@ app.route('/api/getmessages', getMessagesRoute)
 app.route('/api/getmsgusers', getMessageUserDetailsRoute)
 app.route('/api/exitserver', exitServerRoute)
 app.route('/api/guestlogin', guestLoginRoute)
+app.route('/api/create-checkout-session', createCheckoutSession);
 
 app.post('/api/getonlineusers', (c) => c.json(Array.from(onlineUsers)))
 
